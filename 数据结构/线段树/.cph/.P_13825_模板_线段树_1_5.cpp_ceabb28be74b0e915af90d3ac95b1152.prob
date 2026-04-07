@@ -1,0 +1,1 @@
+{"name":"Local: P_13825_模板_线段树_1_5","url":"e:\\vs code\\数据结构\\线段树\\P_13825_模板_线段树_1_5.cpp","tests":[{"id":1768489476726,"input":"5 5\n2 2 4\n1 2 3 2\n2 3 4\n1 1 5 1\n2 1 4","output":"9\n9\n18"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\vs code\\数据结构\\线段树\\P_13825_模板_线段树_1_5.cpp","group":"local","local":true}

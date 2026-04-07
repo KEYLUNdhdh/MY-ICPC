@@ -1,0 +1,1 @@
+{"name":"Local: 3","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第一章 绪论\\3. 计算1~n与1~m每一项相互乘积的和.c","tests":[{"id":1773229379228,"input":"2 3","output":"18"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第一章 绪论\\3. 计算1~n与1~m每一项相互乘积的和.c","group":"local","local":true}

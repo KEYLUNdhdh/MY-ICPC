@@ -1,0 +1,1 @@
+{"name":"Local: K","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\ACM-ICPC选修课\\K. P酱的冒险旅途.cpp","tests":[{"id":1773845701809,"input":"2\n1 -1 5\nLDRDR\n-2 1 8\nRRUDDLRU\n","output":"3\n-1\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\ACM-ICPC选修课\\K. P酱的冒险旅途.cpp","group":"local","local":true}

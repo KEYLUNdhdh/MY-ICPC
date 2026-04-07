@@ -1,0 +1,1 @@
+{"name":"Local: 6","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\6. 整型关键字的散列映射.c","tests":[{"id":1773232442554,"input":"4 5\n24 15 61 88","output":"4 0 1 3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\6. 整型关键字的散列映射.c","group":"local","local":true}

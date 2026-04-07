@@ -1,0 +1,1 @@
+{"name":"Local: 全收集","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\校赛2026\\全收集.cpp","tests":[{"id":1775311734856,"input":"1\n5 3\n10 3 6 2 12\n1 2 4 2\n5 2 2 3\n5 2 1 4\n","output":"23"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\校赛2026\\全收集.cpp","group":"local","local":true}

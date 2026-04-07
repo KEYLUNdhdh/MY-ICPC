@@ -1,0 +1,1 @@
+{"name":"Local: Two_Buttons","url":"e:\\vs code\\CF\\Two_Buttons.cpp","tests":[{"id":1766755357756,"input":"4 6","output":"2"},{"id":1766755367591,"input":"10 1","output":"9"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\vs code\\CF\\Two_Buttons.cpp","group":"local","local":true}

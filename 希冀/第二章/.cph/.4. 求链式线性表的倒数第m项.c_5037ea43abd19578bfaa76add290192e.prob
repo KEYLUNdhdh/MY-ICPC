@@ -1,0 +1,1 @@
+{"name":"Local: 4","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\4. 求链式线性表的倒数第m项.c","tests":[{"id":1773231599378,"input":"3\n1 2 4 5 6","output":"4"},{"id":1773231686538,"input":"10\n1 2 4 5 6","output":"ERROR"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\4. 求链式线性表的倒数第m项.c","group":"local","local":true}

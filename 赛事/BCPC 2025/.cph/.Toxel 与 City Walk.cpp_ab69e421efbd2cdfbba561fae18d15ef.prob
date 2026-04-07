@@ -1,0 +1,1 @@
+{"name":"Local: Toxel 与 City Walk","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\BCPC 2025\\Toxel 与 City Walk.cpp","tests":[{"id":1773388791532,"input":"3\n2 6\n1 4\n10 10","output":"12\n4\n66"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\BCPC 2025\\Toxel 与 City Walk.cpp","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: q","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\校赛2026\\q.cpp","tests":[{"id":1774659666843,"input":"5\n52 7 1 691\n27 4 56 369\n94 7 63 103\n38 2 88 558\n62 11 86 433","output":"357\n295\n82\n290\n394"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\校赛2026\\q.cpp","group":"local","local":true}

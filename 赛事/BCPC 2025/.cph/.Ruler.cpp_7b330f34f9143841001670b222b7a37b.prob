@@ -1,0 +1,1 @@
+{"name":"Local: Ruler","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\BCPC 2025\\Ruler.cpp","tests":[{"id":1773389906638,"input":"2\n4\n5","output":"3\n1 2 4\n4\n1 2 4 5"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\BCPC 2025\\Ruler.cpp","group":"local","local":true}

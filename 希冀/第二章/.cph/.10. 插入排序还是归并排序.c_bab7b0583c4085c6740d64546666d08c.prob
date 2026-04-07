@@ -1,0 +1,1 @@
+{"name":"Local: 10","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\10. 插入排序还是归并排序.c","tests":[{"id":1773236611005,"input":"10\n3 1 2 8 7 5 9 4 0 6\n1 3 2 8 5 7 4 9 0 6","output":"Merge Sort\n1 2 3 8 4 5 7 9 0 6"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\10. 插入排序还是归并排序.c","group":"local","local":true}

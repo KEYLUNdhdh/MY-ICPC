@@ -1,0 +1,1 @@
+{"name":"Local: 4","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第一章 绪论\\4. 爆气球.c","tests":[{"id":1773229745039,"input":"11 120\n-120 -40 0 80 120 140 160 220 240 260 300","output":"120 5"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第一章 绪论\\4. 爆气球.c","group":"local","local":true}

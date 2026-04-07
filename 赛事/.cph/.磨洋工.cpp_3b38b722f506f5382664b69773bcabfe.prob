@@ -1,0 +1,1 @@
+{"name":"Local: 磨洋工","url":"e:\\vs code\\趣味赛\\磨洋工.cpp","tests":[{"id":1766544542790,"input":"3\n2 2 3","output":"11"},{"id":1766544549443,"input":"2\n2 1","output":"3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\vs code\\趣味赛\\磨洋工.cpp","group":"local","local":true}

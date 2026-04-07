@@ -1,0 +1,1 @@
+{"name":"Local: G","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\ACM-ICPC选修课\\G. 偏僻的小路.cpp","tests":[{"id":1773915299945,"input":"2 4 2\n1 M E\n3 M W\n0 0 0\n","output":"1.50 6.00\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\ACM-ICPC选修课\\G. 偏僻的小路.cpp","group":"local","local":true}

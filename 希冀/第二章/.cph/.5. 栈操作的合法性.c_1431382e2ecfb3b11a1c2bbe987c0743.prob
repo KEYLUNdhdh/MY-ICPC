@@ -1,0 +1,1 @@
+{"name":"Local: 5","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\5. 栈操作的合法性.c","tests":[{"id":1773232124564,"input":"4 10\nSSSXXSXXSX\nSSSXXSXXS\nSSSSSSSSSSXSSXXXXXXXXXXX\nSSSXXSXXX","output":"YES\nNO\nNO\nNO"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第二章\\5. 栈操作的合法性.c","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: 小红越级_easy","url":"e:\\vs code\\牛客\\小红越级_easy.cpp","tests":[{"id":1767093438464,"input":"1\n5 3\n1 1\n1 2\n1 3\n1 4\n1 5\n2\n3\n4","output":"0 2 2"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\vs code\\牛客\\小红越级_easy.cpp","group":"local","local":true}

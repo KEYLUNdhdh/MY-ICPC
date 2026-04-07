@@ -1,0 +1,1 @@
+{"name":"Local: h","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\校赛2026\\h.cpp","tests":[{"id":1774672722468,"input":"2\n5\n1 4 5 1 4\n5 4 1 2 3\n5\n3 2 4 1 5\n4 5 1 3 2","output":"2 2 1 1 1\n3 2 2 1 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\校赛2026\\h.cpp","group":"local","local":true}

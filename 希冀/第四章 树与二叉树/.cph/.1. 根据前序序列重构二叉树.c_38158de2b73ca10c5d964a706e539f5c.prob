@@ -1,0 +1,1 @@
+{"name":"Local: 1","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第四章 树与二叉树\\1. 根据前序序列重构二叉树.c","tests":[{"id":1773238420063,"input":"12#4##35###","output":"4 2 5 3 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\希冀\\第四章 树与二叉树\\1. 根据前序序列重构二叉树.c","group":"local","local":true}

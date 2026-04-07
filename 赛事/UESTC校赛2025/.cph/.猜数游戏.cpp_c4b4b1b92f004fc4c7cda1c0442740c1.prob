@@ -1,0 +1,1 @@
+{"name":"Local: 猜数游戏","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\UESTC校赛2025\\猜数游戏.cpp","tests":[{"id":1773501541366,"input":"2\n2 3 4 8\n3 4 5 6\n","output":"Yes 5\nNo\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\UESTC校赛2025\\猜数游戏.cpp","group":"local","local":true}
