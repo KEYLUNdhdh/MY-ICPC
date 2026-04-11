@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -85,80 +86,93 @@ void chmin(T &a, T b)
     if (a > b) 
         a = b;
 }
-constexpr int MOD = 9, INF = 1e9;
-ostream &operator<<(ostream &os, i128 n) {
-    string s;
-    int f = 0;
-    if(n == 0)
-        s = "0";
-    if(n < 0)
-    {
-        f = 1;
-        n = -n;
-    }
-    while (n) {
-        s += '0' + n % 10;
-        n /= 10;
-    }
-    reverse(s.begin(), s.end());
-    if(f)
-        s = '-' + s;
-    return os << s;
-}
-
-istream &operator>>(istream &is,i128& n)
+constexpr int MOD = 998244353, INF = 1e9;
+int P = 998244353;
+struct SegmentTree
 {
-    n = 0;
-    string s;
-    is >> s;
-    int sign = 1, start = 0;
-    if(s[0] == '-')
+    int n;
+    vector<int> switchtag, sum;
+    SegmentTree(int n_) : n{n_}, switchtag(4 * n + 1, 0), sum(4 * n + 1, 0) {}
+    void pull(int p)
     {
-        sign = -1;
-        start = 1;
+        sum[p] = (sum[2 * p] + sum[2 * p + 1]) % P;
     }
-    for (int i = start; i < s.size();i++)
+    void push(int p,int l,int r)
     {
-        n = n * 10 + s[i] - '0';
+        if(switchtag[p])
+        {
+            int m = l + r >> 1;
+            switchtag[2 * p] ^= 1;
+            sum[2 * p] = m - l + 1 - sum[2 * p];
+
+            switchtag[2 * p + 1] ^= 1;
+            sum[2 * p + 1] = r - m - sum[2 * p + 1];
+
+            switchtag[p] = 0;
+        } 
     }
-    n *= sign;
-    return is;
-}
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
-
+    int rangeQuery(int p,int l,int r,int x,int y)
+    {
+        if(l > y || r < x)
+            return 0;
+        if(l >= x && r <= y)
+            return sum[p];
+        int m = l + (r - l) / 2;
+        push(p, l, r);
+        return (rangeQuery(2 * p, l, m, x, y) % P + rangeQuery(2 * p + 1, m + 1, r, x, y) % P);
+    }
+    int rangeQuery(int x,int y)
+    {
+        return rangeQuery(1, 1, n, x, y) % P;
+    }
+    void rangeSwitch(int p,int l,int r,int x,int y)
+    {
+        if(l > y || r < x)
+            return;
+        if(l >= x && r <= y)
+        {
+            sum[p] = r - l + 1 - sum[p];
+            switchtag[p] ^= 1;
+            return;
+        }
+        int m = l + (r - l) / 2;
+        push(p, l, r);
+        rangeSwitch(2 * p, l, m, x, y);
+        rangeSwitch(2 * p + 1, m + 1, r, x, y);
+        pull(p);
+    }
+    void rangeSwitch(int x,int y)
+    {
+        rangeSwitch(1, 1, n, x, y);
+    }
+};
 void solve()
 {
-    int n = 1e5;
-    sieve(n);
-    cout << primes[2024];
+    int n, m;
+    cin >> n >> m;
+    SegmentTree tr(n);
+    for (int i = 0; i < m;i++)
+    {
+        int c, a, b;
+        cin >> c >> a >> b;
+        if(c == 0)
+        {
+            tr.rangeSwitch(a, b);
+        }
+        else
+        {
+            cout << tr.rangeQuery(a, b) << "\n";
+        }
+    }
 }
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int T = 1;  
+    int T = 1;
     // cin >> T;
     while(T--)
         solve();
     return 0;
-}   
+}

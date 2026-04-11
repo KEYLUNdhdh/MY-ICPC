@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -85,80 +86,63 @@ void chmin(T &a, T b)
     if (a > b) 
         a = b;
 }
-constexpr int MOD = 9, INF = 1e9;
-ostream &operator<<(ostream &os, i128 n) {
-    string s;
-    int f = 0;
-    if(n == 0)
-        s = "0";
-    if(n < 0)
-    {
-        f = 1;
-        n = -n;
-    }
-    while (n) {
-        s += '0' + n % 10;
-        n /= 10;
-    }
-    reverse(s.begin(), s.end());
-    if(f)
-        s = '-' + s;
-    return os << s;
-}
-
-istream &operator>>(istream &is,i128& n)
-{
-    n = 0;
-    string s;
-    is >> s;
-    int sign = 1, start = 0;
-    if(s[0] == '-')
-    {
-        sign = -1;
-        start = 1;
-    }
-    for (int i = start; i < s.size();i++)
-    {
-        n = n * 10 + s[i] - '0';
-    }
-    n *= sign;
-    return is;
-}
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
-
+constexpr int MOD = 998244353, INF = 1e9;
+//假设第一个字母是 a，第二个字母是 b，为了不和它们相等，第三个字母必须是 c。同理，第四个字母不能是 b 也不能是 c，必须是 a。你会发现，一旦前两个字母确定了，整个字符串的排列就只能无限循环下去了！
+//所以我们枚举六个开头，然后递推下去就行
 void solve()
 {
-    int n = 1e5;
-    sieve(n);
-    cout << primes[2024];
+    int n, m;
+    cin >> n >> m;
+    string s;
+    cin >> s;
+    vector<string> a(6);
+    a[0] = "ab", a[1] = "ac", a[2] = "ba", a[3] = "bc", a[4] = "ca", a[5] = "cb";
+    auto sw = [&](int k) -> void
+    {
+        for (int i = 2; i < n;i++)
+        {
+            for (int j = 0; j < 3;j++)
+            {
+                char ch = 'a' + j;
+                if(ch != a[k][i - 1] && ch != a[k][i - 2])
+                    a[k].push_back(ch);
+            }
+        }
+    };
+    for (int i = 0; i < 6;i++)
+        sw(i);
+    vector<vector<int>> dp(6, vector<int>(n + 1, 0));
+    for (int i = 0; i < n;i++)
+    {
+        for (int j = 0; j < 6;j++)
+        {
+            if(a[j][i] != s[i])
+                dp[j][i] = (i == 0 ? 1 : dp[j][i - 1] + 1);
+            else
+                dp[j][i] = (i == 0 ? 0 : dp[j][i - 1]);
+        }
+    }
+    while(m--)
+    {
+        int l, r;
+        cin >> l >> r;
+        l--, r--;
+        debug(l)debug(r)
+        cutline
+        int ans = INF;
+        for (int i = 0; i < 6;i++)
+            chmin(ans, dp[i][r] - (l >= 1 ? dp[i][l - 1] : 0));
+        cout << ans << "\n";
+    }
 }
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int T = 1;  
+    int T = 1;
     // cin >> T;
     while(T--)
         solve();
     return 0;
-}   
+}

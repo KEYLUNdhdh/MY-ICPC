@@ -6,8 +6,11 @@ template<typename T>
 struct Fenwick
 {
     int n;
-    vector<T> a;
-
+    // 核心改造：开两棵树
+    // t1 维护 D_i 的前缀和
+    // t2 维护 D_i * i 的前缀和
+    vector<T> t1, t2;
+    
     Fenwick(int n_ = 0)
     {
         init(n_);
@@ -16,49 +19,41 @@ struct Fenwick
     void init(int n_)
     {
         n = n_;
-        a.assign(n + 1, T{});
+        t1.assign(n + 1, T{});
+        t2.assign(n + 1, T{});
     }
-
+    // 内部的单点更新操作（供区间加减调用）
     void add(int x,T v)
     {
+        T v2 = v * x;// 提取算出 v * x，注意这里是乘原始的 x，不是下面的 i
         for (int i = x; i <= n;i += i & (-i))
         {
-            a[i] += v;
+            t1[i] += v;
+            t2[i] += v2;
         }
     }
-
+    //新增：真正的区间修改，区间 [l, r] 加上 v
+    void rangeAdd(int l, int r, T v)
+    {
+        add(l, v);
+        add(r + 1, -v);
+    }
+    // 内部的前缀和求法（应用裂解公式）
     T sum(int x)
     {
-        T ans{};
+        T sum1{}, sum2{};
         for (int i = x; i > 0;i -= i & (-i))
         {
-            ans += a[i];
+            sum1 += t1[i];
+            sum2 += t2[i];
         }
-        return ans;
+        // 数学魔法变现： (x + 1) * sum(D_i) - sum(D_i * i)
+        return sum1 * (x + 1) - sum2;
     }
-
+    //真正的区间查询，求区间 [l, r] 的和
     T rangeSum(int l,int r)
     {
         return sum(r) - sum(l - 1);
     }
-    //select的功能是找到最大的位置 x，使得前缀和到x时 < k
-    //核心步骤：起点：从最大的 2 的幂次（比如 2^18）开始尝试。
-    //试探：看当前的 x 加上步长 i 后，对应节点 a[x + i] 的值。为什么可以直接加？ 因为在树状数组中，当 i 是 2 的幂次时，a[x + i] 恰好存储了左开右闭区间 (x, x+i] 的和。
-    //决策：如果 cur + a[x + i] 还没超过 k，说明目标位置还在更右边。我们把 x 挪过去，并更新当前累计的和 cur。如果超过了 k，说明跳过头了，我们不做操作，减小步长 i 继续试。
-    //这本质是对前缀和进行二分查找，所以必须保证前缀和是单调不减的。
-    // 也就是说，你的树状数组中所有的 add(x, v) 中的 v 必须 大于0。如果数组里有负数，前缀和就不再单调，二分（倍增）逻辑就会失效。
-    int select(const T &k)
-    {
-        int x = 0;
-        T cur{};
-        for (int i = 1 << __lg(n); i;i >>= 1)
-        {
-            if(x + i <= n && cur + a[x + i] <= k)
-            {
-                x += i;
-                cur += a[x];
-            }
-        }
-        return x;
-    }
+    
 };

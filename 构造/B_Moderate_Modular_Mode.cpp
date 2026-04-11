@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -85,80 +86,43 @@ void chmin(T &a, T b)
     if (a > b) 
         a = b;
 }
-constexpr int MOD = 9, INF = 1e9;
-ostream &operator<<(ostream &os, i128 n) {
-    string s;
-    int f = 0;
-    if(n == 0)
-        s = "0";
-    if(n < 0)
-    {
-        f = 1;
-        n = -n;
-    }
-    while (n) {
-        s += '0' + n % 10;
-        n /= 10;
-    }
-    reverse(s.begin(), s.end());
-    if(f)
-        s = '-' + s;
-    return os << s;
-}
-
-istream &operator>>(istream &is,i128& n)
-{
-    n = 0;
-    string s;
-    is >> s;
-    int sign = 1, start = 0;
-    if(s[0] == '-')
-    {
-        sign = -1;
-        start = 1;
-    }
-    for (int i = start; i < s.size();i++)
-    {
-        n = n * 10 + s[i] - '0';
-    }
-    n *= sign;
-    return is;
-}
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
-
+constexpr int MOD = 998244353, INF = 1e9;
+//纯数学推导，太eazy了
 void solve()
 {
-    int n = 1e5;
-    sieve(n);
-    cout << primes[2024];
+    i64 x, y;
+    cin >> x >> y;
+    if(x == y)
+    {
+        cout << x << "\n";
+    }
+    else if(y < x)
+    {
+        cout << x + y << "\n";
+    }
+    else
+    {
+        //y > x
+        i64 m = y % x;
+        i64 q = 1;
+        y /= 2;
+        x /= 2;
+        i64 k = y % x;
+        i64 p = (y - k) / x;
+        i64 ans = p * x * 2 + k;
+        cout << ans << "\n";
+        // if(ans % x == y % ans)
+        //     cerr << " 1";
+    }
 }
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int T = 1;  
-    // cin >> T;
+    int T = 1;
+    cin >> T;
     while(T--)
         solve();
     return 0;
-}   
+}

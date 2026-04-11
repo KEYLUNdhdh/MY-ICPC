@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -85,80 +86,107 @@ void chmin(T &a, T b)
     if (a > b) 
         a = b;
 }
-constexpr int MOD = 9, INF = 1e9;
-ostream &operator<<(ostream &os, i128 n) {
-    string s;
-    int f = 0;
-    if(n == 0)
-        s = "0";
-    if(n < 0)
-    {
-        f = 1;
-        n = -n;
-    }
-    while (n) {
-        s += '0' + n % 10;
-        n /= 10;
-    }
-    reverse(s.begin(), s.end());
-    if(f)
-        s = '-' + s;
-    return os << s;
-}
-
-istream &operator>>(istream &is,i128& n)
+constexpr int MOD = 998244353, INF = 1e9;
+template<typename T>
+struct FenWick
 {
-    n = 0;
-    string s;
-    is >> s;
-    int sign = 1, start = 0;
-    if(s[0] == '-')
+    int n, m;
+    struct Node
     {
-        sign = -1;
-        start = 1;
-    }
-    for (int i = start; i < s.size();i++)
+        T d1, d2, d3, d4;
+        Node() : d1(0), d2(0), d3(0), d4(0) {}
+    };
+
+    vector<Node> tr;
+    FenWick(int n_ = 0, int m_ = 0)
     {
-        n = n * 10 + s[i] - '0';
+        init(n_, m_);
     }
-    n *= sign;
-    return is;
-}
-vector<int> primes,isPrime;
 
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
+    void init(int n_ = 0, int m_ = 0)
+    {
+        n = n_;
+        m = m_;
+        tr.assign((n + 1) * (m + 1), Node());
+    }
 
+    inline int id(int x, int y) const
+    {
+        return x * (m + 1) + y;
+    }
+
+    void add(int x, int y, T v)
+    {
+        for (int i = x; i <= n;i += i & (-i))
+        {
+            for (int j = y; j <= m;j += j & (-j))
+            {
+                int pos = id(i, j);
+                tr[pos].d1 += v;
+                tr[pos].d2 += v * x;
+                tr[pos].d3 += v * y;
+                tr[pos].d4 += v * x * y;
+            }
+        }
+    }
+
+    void rangeAdd(int x1, int y1, int x2, int y2    , T v)
+    {
+        add(x1, y1, v);
+        add(x2 + 1, y1, -v);
+        add(x1, y2 + 1, -v);
+        add(x2 + 1, y2 + 1, v);
+    }
+
+    T query(int x, int y)
+    {
+        T ans{};
+        for (int i = x; i > 0; i-= i & (-i))
+        {
+            for (int j = y; j > 0;j -= j & (-j))
+            {
+                int pos = id(i, j);
+                ans += tr[pos].d1 * (x + 1) * (y + 1) - tr[pos].d2 * (y + 1) - tr[pos].d3 * (x + 1) + tr[pos].d4;
+            }
+        }
+        return ans;
+    }
+
+    T rangeSum(int x1, int y1, int x2, int y2)
+    {
+        return query(x2, y2) - (query(x1 - 1, y2)) - query(x2, y1 - 1) + query(x1 - 1, y1 - 1);
+    }
+};
 void solve()
 {
-    int n = 1e5;
-    sieve(n);
-    cout << primes[2024];
+    int n, m;
+    cin >> n >> m;
+    FenWick<i64> t(n, m);
+    int op;
+    while(cin >> op)
+    {
+        if(op == 1)
+        {
+            int a, b, c, d, x;
+            cin >> a >> b >> c >> d >> x;
+            t.rangeAdd(a, b, c, d, x);
+        }
+        else
+        {
+            int a, b, c, d;
+            cin >> a >> b >> c >> d;
+            cout << t.rangeSum(a, b, c, d) << "\n";
+        }
+    }
 }
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int T = 1;  
+    int T = 1;
     // cin >> T;
     while(T--)
         solve();
     return 0;
-}   
+}
