@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -85,83 +86,46 @@ void chmin(T &a, T b)
     if (a > b) 
         a = b;
 }
-constexpr int MOD = 9, INF = 1e9;
-ostream &operator<<(ostream &os, i128 n) {
-    string s;
-    int f = 0;
-    if(n == 0)
-        s = "0";
-    if(n < 0)
-    {
-        f = 1;
-        n = -n;
-    }
-    while (n) {
-        s += '0' + n % 10;
-        n /= 10;
-    }
-    reverse(s.begin(), s.end());
-    if(f)
-        s = '-' + s;
-    return os << s;
-}
-
-istream &operator>>(istream &is,i128& n)
-{
-    n = 0;
-    string s;
-    is >> s;
-    int sign = 1, start = 0;
-    if(s[0] == '-')
-    {
-        sign = -1;
-        start = 1;
-    }
-    for (int i = start; i < s.size();i++)
-    {
-        n = n * 10 + s[i] - '0';
-    }
-    n *= sign;
-    return is;
-}
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
+constexpr int MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-    i64 n = 1e12;
-    for (int i = 0; i < 10;i++)
+    int n, k, p;
+    cin >> n >> k >> p;
+    priority_queue<int, vector<int>, greater<int>> minn;
+    int cnt = 0;
+    for (int i = 0; i < p;i++)
     {
-        n = sqrt(n);
-        debug(n);
+        int x;
+        cin >> x;
+        if(minn.size() < k)
+        {
+            minn.push(x);
+            cnt++;
+            continue;
+        }
+        else
+        {
+            if(x <= minn.top())
+                continue;
+            else
+            {
+                minn.pop();
+                minn.push(x);
+                cnt++;
+            }
+        }
     }
+    cout << cnt;
 }
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int T = 1;  
+    int T = 1;
     // cin >> T;
     while(T--)
         solve();
     return 0;
-}   
+}

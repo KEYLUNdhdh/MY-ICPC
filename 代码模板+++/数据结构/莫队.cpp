@@ -22,7 +22,7 @@ struct Mo
     {
         n = n_;
         m = m_;
-        a = a_
+        a = a_;
         blockSize = max(1, (int)(n / sqrt(m)));
         ans.assign(m, 0);
         cnt.assign(max_val + 1, 0);

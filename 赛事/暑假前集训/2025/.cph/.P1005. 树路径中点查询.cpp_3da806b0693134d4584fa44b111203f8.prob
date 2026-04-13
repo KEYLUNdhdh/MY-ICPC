@@ -1,0 +1,1 @@
+{"name":"Local: P1005","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假前集训\\2025\\P1005. 树路径中点查询.cpp","tests":[{"id":1775979258830,"input":"5 3\n1 2\n2 3\n2 4\n4 5\n1 3\n1 5\n3 5\n","output":"2\n2 4\n2 4\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假前集训\\2025\\P1005. 树路径中点查询.cpp","group":"local","local":true}

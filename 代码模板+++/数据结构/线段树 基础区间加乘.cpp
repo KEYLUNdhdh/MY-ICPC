@@ -88,35 +88,3 @@ struct SegmentTree
         rangeAdd(1, 1, n, x, y, v);
     }
 };
-
-// signed main()
-// {
-//     int n, m;
-//     cin >> n >> m >> P;
-//     SegmentTree sg(n);
-//     for (int i = 1; i <= n;i++)
-//     {
-//         int tp;
-//         cin >> tp;
-//         sg.add(i, i, tp);
-//     }
-//     int op, x, y, k;
-//     while(m--)
-//     {
-//         if(op == 1)
-//         {
-//             cin >> x >> y >> k;
-//             sg.rangeMul(x, y, k);
-//         }
-//         else if(op == 2)
-//         {
-//             cin >> x >> y >> k;
-//             sg.add(x, y, k);
-//         } 
-//         else
-//         {
-//             cin >> x >> y;
-//             cout << sg.query(x, y) % P << "\n";
-//         }
-//     }
-// }

@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -85,83 +86,79 @@ void chmin(T &a, T b)
     if (a > b) 
         a = b;
 }
-constexpr int MOD = 9, INF = 1e9;
-ostream &operator<<(ostream &os, i128 n) {
-    string s;
-    int f = 0;
-    if(n == 0)
-        s = "0";
-    if(n < 0)
-    {
-        f = 1;
-        n = -n;
-    }
-    while (n) {
-        s += '0' + n % 10;
-        n /= 10;
-    }
-    reverse(s.begin(), s.end());
-    if(f)
-        s = '-' + s;
-    return os << s;
-}
-
-istream &operator>>(istream &is,i128& n)
+constexpr int MOD = 998244353, INF = 1e9;
+constexpr int P = 1e9 + 7;
+struct SegmentTree
 {
-    n = 0;
-    string s;
-    is >> s;
-    int sign = 1, start = 0;
-    if(s[0] == '-')
+    int n;
+    vector<int>  eTag, sum;
+    SegmentTree(int n_) : n{n_}, eTag(4 * n + 1, 0), sum(4 * n + 1) {}
+    void pull(int p)
     {
-        sign = -1;
-        start = 1;
+        sum[p] = (sum[p << 1] + sum[p << 1 | 1]) % P;
     }
-    for (int i = start; i < s.size();i++)
+    void push(int p,int l,int r)
     {
-        n = n * 10 + s[i] - '0';
+        if(eTag[p] != 0)
+        {
+            int m = l + (r - l) / 2;
+            applye(2 * p, l, m, eTag[p]);
+            applye(2 * p + 1, m + 1, r, eTag[p]);
+            eTag[p] = 0;
+        }
     }
-    n *= sign;
-    return is;
-}
-vector<int> primes,isPrime;
+    int rangeQuery(int p,int l,int r,int x,int y)
+    {
+        if(l > y || r < x)
+            return 0;
+        if(l >= x && r <= y)
+            return sum[p];
+        int m = l + (r - l) / 2;
+        push(p, l, r);
+        return (rangeQuery(2 * p, l, m, x, y) % P + rangeQuery(2 * p + 1, m + 1, r, x, y) % P);
+    }
+    int rangeQuery(int x,int y)
+    {
+        return rangeQuery(1, 1, n, x, y) % P;
+    }
+    void applye(int p,int l,int r,i64 v)
+    {
+        
+    }
+    void rangee(int p,int l,int r,int x,int y,i64 v)
+    {
+        if(l > y || r < x)
+            return;
+        if(l >= x && r <= y)
+        {
+            applye(p, l, r, v);
+            return;
+        }
+        int m = l + (r - l) / 2;
+        push(p, l, r);
+        rangee(2 * p, l, m, x, y, v);
+        rangee(2 * p + 1, m + 1, r, x, y, v);
+        pull(p);
+    }
+    void rangee(int x,int y,i64 v)
+    {
+        rangee(1, 1, n, x, y, v);
+    }
+};
 
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
 
 void solve()
 {
-    i64 n = 1e12;
-    for (int i = 0; i < 10;i++)
-    {
-        n = sqrt(n);
-        debug(n);
-    }
+    
 }
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int T = 1;  
-    // cin >> T;
+    int T = 1;
+    cin >> T;
     while(T--)
         solve();
     return 0;
-}   
+}
