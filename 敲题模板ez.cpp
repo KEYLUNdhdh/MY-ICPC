@@ -20,10 +20,16 @@ typedef pair<i128, i128> pllll;
 mt19937 rnd(time(0));
 
 template<class T>
-
 void chmin(T &a, T b) 
 {
     if (a > b) 
+        a = b;
+}
+
+template<class T>
+void chmin(T &a, T b) 
+{
+    if (a < b) 
         a = b;
 }
 constexpr int MOD = 998244353, INF = 1e9;

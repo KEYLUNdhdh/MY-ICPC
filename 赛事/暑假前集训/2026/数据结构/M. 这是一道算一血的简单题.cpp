@@ -87,98 +87,76 @@ void chmin(T &a, T b)
         a = b;
 }
 constexpr int MOD = 998244353, INF = 1e9;
-struct DSU
+
+template<typename T,typename F>
+struct STable
 {
-    vector<int> f, siz;
-    int part;
-    DSU() {};
-    DSU(int n)
+    int n;
+    int maxlog;
+    vector<vector<T>> st;
+    F func;
+    //a 1 - index
+    STable(const vector<T>& a,const F& f) : func(f)
     {
-        init(n);
+        n = a.size() - 1;
+        maxlog = __lg(n) + 1;
+        st.assign(n + 1, vector<T>(maxlog));
+        for (int i = 1; i <= n;i++)
+            st[i][0] = a[i];
+        for (int j = 1; j < maxlog;j++)
+        {
+            int len = 1 << (j - 1);
+            for (int i = 1;i <= n - (1 << j) + 1;i++)
+                st[i][j] = func(st[i][j - 1], st[i + len][j - 1]);
+        }
     }
-    //input n,open n + 1
-    void init(int n)
+    inline T query(int l,int r) const
     {
-        f.resize(n + 1);
-        iota(f.begin(), f.end(), 0);
-        siz.assign(n + 1, 1);
-        part = n;
-    }
-    int find(int x)
-    {
-        while(x != f[x])
-            x = f[x] = f[f[x]];
-        return x;
-    }
-    bool same(int x,int y)
-    {
-        return find(x) == find(y);
-    }
-    bool merge(int x,int y)
-    {
-        x = find(x);
-        y = find(y);
-        if(x == y)
-            return false;
-        if(siz[x] < siz[y])
-            swap(x, y);
-        siz[x] += siz[y];
-        f[y] = x;
-        part--;
-        return true;
-    }
-    int size(int x)
-    {
-        return siz[find(x)];
+        if (l > r) 
+            swap(l, r);
+        int k = __lg(r - l + 1);
+        return func(st[l][k], st[r - (1 << k) + 1][k]);
     }
 };
-
-struct cir
-{
-    i64 x, y, r;
-};
-
 void solve()
 {
-    i64 n, h;
-    cin >> n >> h;
-    DSU d(n + 1);
-    vector<cir> a(n + 1);
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n + 1, 0);
     for (int i = 1; i <= n;i++)
-        cin >> a[i].x >> a[i].y >> a[i].r;
-    auto check = [&](cir &p, cir &q) -> bool
+        cin >> a[i];
+    i64 minn, maxx;
+    STable mi(a, [&](const int &a, const int &b)
+             { return min(a, b); });
+    STable Ma(a, [&](const int a, const int &b)
+             { return max(a, b); });
+    while (m--)
     {
-        i64 dis = (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
-        i64 rm = q.r + p.r;
-        if(dis <= rm * rm)
-            return true;
-        else
-            return false;
-    };
-    for (int i = 1; i <= n;i++)
-        for (int j = i + 1; j <= n;j++)
+        int k;
+        cin >> k;
+        int l = 1;
+        i64 ans = 0;
+        for (int r = 1; r <= n;r++)
         {
-            if(check(a[i], a[j]))
+            minn = mi.query(l, r);
+            maxx = Ma.query(l, r);
+            while(l <= r)
             {
-                d.merge(i, j);
+                if(maxx - minn <= k)
+                {
+                    ans += l - 1;
+                    break;
+                }
+                else
+                {
+                    l++;
+                    minn = mi.query(l, r);
+                    maxx = Ma.query(l, r);
+                }
             }
         }
-    i64 up = h;
-    i64 lw = 0;
-    for (int i = 1; i <= n;i++)
-    {
-        if(a[i].y <= a[i].r + lw)
-            d.merge(0, i);
+        cout << ans << "\n";
     }
-    for (int i = 1; i <= n;i++)
-    {
-        if(up - a[i].y <= a[i].r)
-            d.merge(n + 1, i);
-    }
-    if(d.find(0) == d.find(n + 1))
-        cout << "Yes\n";
-    else
-        cout << "No\n";
 }
 
 signed lyc_fan_club()

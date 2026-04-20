@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -86,19 +87,99 @@ void chmin(T &a, T b)
         a = b;
 }
 constexpr int MOD = 998244353, INF = 1e9;
+struct DSU
+{
+    vector<int> f, siz;
+    int part;
+    DSU() {};
+    DSU(int n)
+    {
+        init(n);
+    }
+    //input n,open n + 1
+    void init(int n)
+    {
+        f.resize(n + 1);
+        iota(f.begin(), f.end(), 0);
+        siz.assign(n + 1, 1);
+        part = n;
+    }
+    int find(int x)
+    {
+        while(x != f[x])
+            x = f[x] = f[f[x]];
+        return x;
+    }
+    bool same(int x,int y)
+    {
+        return find(x) == find(y);
+    }
+    bool merge(int x,int y)
+    {
+        x = find(x);
+        y = find(y);
+        if(x == y)
+            return false;
+        if(siz[x] < siz[y])
+            swap(x, y);
+        siz[x] += siz[y];
+        f[y] = x;
+        part--;
+        return true;
+    }
+    int size(int x)
+    {
+        return siz[find(x)];
+    }
+};
+
+struct cir
+{
+    i64 x, y, r;
+};
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<int> a(n);
-    int minn = INF;
-    for (int i = 0; i < n;i++)
+    i64 n;
+    i64 y1;
+    i64 y2;
+    cin >> n >> y1 >> y2;
+    DSU d(n + 1);
+    vector<cir> a(n + 1);
+    for (int i = 1; i <= n;i++)
+        cin >> a[i].x >> a[i].y >> a[i].r;
+    auto check = [&](cir &p, cir &q) -> bool
     {
-        cin >> a[i];
-        chmin(minn, a[i]);
-    }
+        i64 dis = (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
+        i64 rm = q.r + p.r;
+        if(dis <= rm * rm)
+            return true;
+        else
+            return false;
+    };
+    for (int i = 1; i <= n;i++)
+        for (int j = i + 1; j <= n;j++)
+        {
+            if(check(a[i], a[j]))
+            {
+                d.merge(i, j);
+            }
+        }
     
+    for (int i = 1; i <= n;i++)
+    {
+        if(a[i].y - a[i].r <= y1)
+            d.merge(0, i);
+    }
+    for (int i = 1; i <= n;i++)
+    {
+        if(a[i].y + a[i].r >= y2)
+            d.merge(n + 1, i);
+    }
+    if(d.find(0) == d.find(n + 1))
+        cout << "Yes\n";
+    else
+        cout << "No\n";
 }
 
 signed lyc_fan_club()
@@ -106,7 +187,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
     return 0;

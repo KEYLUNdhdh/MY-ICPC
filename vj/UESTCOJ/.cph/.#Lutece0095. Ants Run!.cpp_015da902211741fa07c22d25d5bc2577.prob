@@ -1,0 +1,1 @@
+{"name":"Local: #Lutece0095","url":"e:\\vs code\\UESTCOJ\\#Lutece0095. Ants Run!.cpp","tests":[{"id":1764900074710,"input":"2\n3 1\n1 1 1\n3 1\n3 2 1","output":"Inf\n3.142"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\vs code\\UESTCOJ\\#Lutece0095. Ants Run!.cpp","group":"local","local":true}

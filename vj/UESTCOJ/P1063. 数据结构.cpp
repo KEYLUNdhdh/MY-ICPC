@@ -14,6 +14,7 @@ using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
+using db = double;
 typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
@@ -85,26 +86,44 @@ void chmin(T &a, T b)
     if (a > b) 
         a = b;
 }
-constexpr int MOD = 9, INF = 1e9;
+constexpr int MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-    string s;
-    cin >> s;
-    debug(s)
-    if(s.find("swufe") != string::npos)
-        cout << 200;
-    else
-        cout << 404;
+    int n, m;
+    cin >> n >> m;
+    map<i64, i64> mp;
+    while(m--)
+    {
+        int op;
+        cin >> op;
+        if(op == 1)
+        {
+            i64 x, y;
+            cin >> x >> y;
+            if(!mp[x])
+                mp[x] = x + y;
+            else
+                mp[x] += y;
+        }
+        else
+        {
+            i64 x;
+            cin >> x;
+            if(!mp[x])
+                mp[x] = x;
+            cout << mp[x] << "\n";
+        }
+    }
 }
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    int T = 1;  
+    int T = 1;
     // cin >> T;
     while(T--)
         solve();
     return 0;
-}   
+}

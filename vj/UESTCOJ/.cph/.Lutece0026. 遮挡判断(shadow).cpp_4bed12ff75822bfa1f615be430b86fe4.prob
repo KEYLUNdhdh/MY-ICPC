@@ -1,0 +1,1 @@
+{"name":"Local: Lutece0026","url":"e:\\vs code\\UESTCOJ\\Lutece0026. 遮挡判断(shadow).cpp","tests":[{"id":1765199511123,"input":"4\n0 3\n3 1\n2 2\n1 1\n1/1\n0","output":"2"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\vs code\\UESTCOJ\\Lutece0026. 遮挡判断(shadow).cpp","group":"local","local":true}
