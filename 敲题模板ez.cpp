@@ -27,7 +27,7 @@ void chmin(T &a, T b)
 }
 
 template<class T>
-void chmin(T &a, T b) 
+void chmax(T &a, T b) 
 {
     if (a < b) 
         a = b;

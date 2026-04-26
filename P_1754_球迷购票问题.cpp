@@ -128,20 +128,3 @@ signed lyc_fan_club()
         solve();
     return 0;
 }
-
-
-// 伪代码逻辑
-// void drawKoch(double length, int depth) {
-//     if (depth == 0) {
-//         drawLine(length); // 递归边界：画一条直线
-//         return;
-//     }
-//     // 分治为4个部分，每个部分深度减1
-//     drawKoch(length / 3, depth - 1);
-//     turnLeft(60);
-//     drawKoch(length / 3, depth - 1);
-//     turnRight(120);
-//     drawKoch(length / 3, depth - 1);
-//     turnLeft(60);
-//     drawKoch(length / 3, depth - 1);
-// }

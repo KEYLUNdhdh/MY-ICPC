@@ -39,9 +39,10 @@ void solve()
 
     vector<vector<int>> adj(node_count + 1);//邻接表，存储每个点能到达哪些点
     vector<int> in_degree(node_count + 1, 0);//存储每个点的入度
+    vector<int> out_degree(node_count + 1, 0);//存储每个点的出度
     vector<bitset<MAXN>> reach(node_count + 1);//reach[u]为从节点u出发能够到达的节点集合（包含自身）。
     vector<bitset<MAXN>> rev_reach(node_count + 1);//rev_reach[u]从其他节点出发能到达u的节点
-
+    bool greatest_ex = 0, least_ex = 0;//判断最小和最大是否存在
     // 2. 建图与自环初始化
     for (int i = 0; i < m;i++)
     {
@@ -49,6 +50,7 @@ void solve()
         int v = get_id(edges[i].second);
         adj[u].push_back(v);
         in_degree[v]++;
+        out_degree[u]++;
     }
 
     for (int i = 1; i <= node_count;i++)
@@ -57,25 +59,63 @@ void solve()
         rev_reach[i].set(i);
     }
 
-    // 3. Kahn 算法拓扑排序
-    vector<int> topo_order;
-    queue<int> q;
+    deque<int> q;//存入度为0的点，也就是极小值
+    deque<int> p;//存出度为0的点，也就是极大值
     for(int i = 1;i <= node_count;i++)
     {
         if(in_degree[i] == 0)
-            q.push(i);
+            q.push_back(i);
+        if(out_degree[i] == 0)
+            p.push_back(i);
+    }
+    //处理最大值/极大值
+    if(q.size() == 1)
+    {
+        cout << "Greatest Element: " << id2name[p[0]] << "\n";
+    }
+    else
+    {
+        cout << "Greatest Element: None" << "\n";
     }
 
+    cout << "Maximals: ";
+
+    for(int u : p)
+    {
+        cout << id2name[u] << " ";
+    }
+    cout << "\n";
+
+    //处理最小值/极小值
+    if(p.size() == 1)
+    {
+        cout << "Least Element: " << id2name[q[0]] << "\n";
+    }
+    else
+    {
+        cout << "Least Element: None" << "\n";
+    }
+
+    cout << "Minimals: ";
+
+    for(int u : q)
+    {
+        cout << id2name[u] << " ";
+    }
+    cout << "\n";
+
+    vector<int> topo_order;
+    // 3. Kahn 算法拓扑排序
     while(!q.empty())
     {
         int u = q.front();
-        q.pop();
+        q.pop_front();
         topo_order.push_back(u);
         for(int v : adj[u])
         {
             in_degree[v]--;
             if(in_degree[v] == 0)
-                q.push(v);
+                q.push_back(v);
         }
     }
 
@@ -164,7 +204,6 @@ void solve()
                 break;
             }
         }   
-
         cout << "Upper Bounds: "; print_set(UB);
         cout << "Lower Bounds: "; print_set(LB);
         cout << "Least Upper Bound (LUB): " << (lub != -1 ? id2name[lub] : "None") << "\n";
