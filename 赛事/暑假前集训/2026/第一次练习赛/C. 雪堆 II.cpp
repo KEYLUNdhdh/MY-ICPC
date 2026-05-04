@@ -3,7 +3,7 @@
 #define debugarr(x){        \
     cerr << #x << " : ";    \
     for(auto v : x)         \
-    cerr << v << " ";       \
+    cerr << v << " ";   \
     cerr << "\n";           \
 }
 #define cutline { cerr << "----------------------\n"; }
@@ -36,6 +36,37 @@ constexpr int MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int n, k;
+    cin >> n >> k;
+    vector<i64> v(n + 1, 0);
+    vector<i64> prefix(n + 1, 0);
+    i64 sum = 0;
+    for (int i = 1; i <= n;i++)
+    {
+        cin >> v[i];
+        prefix[i] = prefix[i - 1] + v[i];
+    }
+    if(n == 1)
+    {
+        cout << v[1] + k - 1 << "\n";
+        return;
+    }
+    if(k < n)
+    {
+        for (int i = k; i <= n;i++)
+            chmax(sum, prefix[i] - prefix[i - k]);
+        debug(sum)
+        cout << sum + 1ll * k * (k - 1) / 2 << "\n";
+    }
+    else
+    {
+        sum = prefix[n] - prefix[0];
+        // debug(sum)
+        sum += 1ll * n * (n - 1) / 2;
+        k -= n;
+        sum += 1ll * k * n;
+        cout << sum << "\n";
+    }
 
 }
 

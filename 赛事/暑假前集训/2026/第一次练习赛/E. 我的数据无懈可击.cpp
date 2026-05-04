@@ -3,10 +3,10 @@
 #define debugarr(x){        \
     cerr << #x << " : ";    \
     for(auto v : x)         \
-    cerr << v << " ";       \
+    cerr << v << " ";   \
     cerr << "\n";           \
 }
-#define cutline { cerr << "----------------------\n"; }
+#define cutline {cerr << "----------------------\n";}
 using namespace std;
 using i64 = long long;
 using u64 = unsigned long long;
@@ -36,7 +36,19 @@ constexpr int MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int p, n;
+    cin >> p >> n;
+    vector<int> b(n + 1, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> b[i];
 
+    if(n > p)
+    {
+        cout << "No\n";
+        return;
+    }
+
+    
 }
 
 signed main()
@@ -44,7 +56,7 @@ signed main()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
 

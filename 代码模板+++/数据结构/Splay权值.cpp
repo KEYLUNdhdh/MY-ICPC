@@ -26,7 +26,7 @@ struct Splay
         delete t;
     }
 
-    // ---------- 辅助函数 ----------
+    // --------------------
     int getpos(Node* t) const
     {
         return t->parent ? (t->parent->ch[1] == t) : 0;
@@ -59,7 +59,7 @@ struct Splay
         t->lazy = 0;
     }
 
-    // ---------- 旋转与伸展 ----------
+    // --------------------
     void rotate(Node *t)
     {
         Node *q = t->parent;
@@ -101,7 +101,7 @@ struct Splay
         root = t;
     }
 
-    // ---------- 分裂与合并 ----------
+    // --------------------
     pair<Node*, Node*> split(Node *t, int x)
     {
         if(!t)
@@ -155,7 +155,7 @@ struct Splay
         return i;
     }
 
-    // ---------- 基本操作 ----------
+    // --------------------
     void insert(int val, int id = 0)
     {
         Node *x = new Node(val, id);
@@ -256,8 +256,6 @@ struct Splay
         out.push_back({t->val, t->id});
         inOrder(t->ch[1], out);
     }
-    //对所有> x的执行add操作
-    // >= x的情况自己微调
     void add(int x, int addval)
     {
         auto [L, MR] = split(root, x);
@@ -267,7 +265,6 @@ struct Splay
         
         root = merge(merge(L, M), R);
     }
-    //对所有< x的执行minus操作
     void minus(int x,int mival)
     {
         auto [L, R] = split(root, x);
@@ -294,16 +291,3 @@ struct Splay
     }
 };
 
-int main() {
-    Splay sp;
-    sp.insert(5);
-    sp.insert(3);
-    sp.insert(8);
-    sp.insert(1);
-    sp.print();                 // 应输出 1 3 5 8      
-    sp.print();                 // 应输出 1 13 15 18
-    sp.eraseAll(13);
-    sp.print();                 // 应输出 1 15 18
-    cout << sp.kth(2) << '\n';  // 应输出 15
-    return 0;
-}

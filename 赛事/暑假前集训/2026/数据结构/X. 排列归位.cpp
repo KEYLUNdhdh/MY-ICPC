@@ -88,61 +88,89 @@ void chmin(T &a, T b)
 }
 constexpr int MOD = 998244353, INF = 1e9;
 
+template<typename T>
+struct Fenwick
+{
+    int n;
+    vector<T> t1, t2;
+
+    Fenwick(int n_ = 0)
+    {
+        init(n_);
+    }
+
+    void init(int n_)
+    {
+        n = n_;
+        t1.assign(n + 1, T{});
+        t2.assign(n + 1, T{});
+    }
+
+    void add(int x,T v)
+    {
+        T v2 = v * x;
+        for (int i = x; i <= n;i += i & (-i))
+        {
+            t1[i] += v;
+            t2[i] += v2;
+        }
+    }
+
+    void rangeAdd(int l, int r, T v)
+    {
+        add(l, v);
+        add(r + 1, -v);
+    }
+
+    T sum(int x)
+    {
+        T sum1{}, sum2{};
+        for (int i = x; i > 0;i -= i & (-i))
+        {
+            sum1 += t1[i];
+            sum2 += t2[i];
+        }
+        return sum1 * (x + 1) - sum2;
+    }
+
+    T rangeSum(int l,int r)
+    {
+        return sum(r) - sum(l - 1);
+    }
+    
+};
+
 void solve()
 {
     int n;
     cin >> n;
-    vector<int> a(n + 1, 0);
-    vector<int> ans(n + 1, -1);
-    vector<int> wa;
-    map<int, int> mp;
+    vector<int> b(n << 1 | 1, 0);
     for (int i = 1; i <= n;i++)
+        cin >> b[i];
+    for (int i = n + 1; i <= 2 * n;i++)
+        b[i] = b[i - n] + n;
+    vector<int> d(2 * n + 1, 0);
+    for (int i = 1; i <= 2 * n;i++)
     {
-        cin >> a[i];
-        mp[a[i]] = i;
-        if(a[i] == i)
-            ans[i] = 0;
+        int num = b[i];
+        if(i <= num)
+            d[i] = num;
         else
-            wa.push_back(i);
+            d[i] = num + n;
     }
-    int len = wa.size();
-    // debugarr(wa)
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
-    for (int i = 0; i < len;i++)
+    vector<int> ans(2 * n + 1, 0);
+    Fenwick<i64> tr(3 * n + 1);
+    for (int i = 2 * n - 1; i >= 1;i--)
     {
-        int poss = wa[i];
-        int num = a[wa[i]];
-        int pos = lower_bound(wa.begin(), wa.end(), num) - wa.begin();
-        int cnt = (pos - i + len) % len;
-        ans[num] = cnt;
-        pq.push({cnt, num});
+        int x = tr.rangeSum(i + 1, d[i] - 1);
+        int ilen = d[i] - i;
+        ans[b[i]] = ilen - x;
+        tr.rangeAdd(d[i], d[i], 1);
     }
-    int less = 0;
-    int totalpace = 0;
-    while(!pq.empty())
-    {
-        auto [cnt, num] = pq.top();
-        while(!pq.empty())
-        {
-            auto [cntt, numm] = pq.top();
-            if(cntt != cnt)
-            {
-                break;
-            }
-            else
-            {
-                ans[numm] = cntt - totalpace;
-                less++;
-                pq.pop();
-            }
-        }
-        totalpace++;
-    }
-    // debugarr(ans)
     for (int i = 1; i <= n;i++)
         cout << ans[i] << " ";
 }
-//4 1 3 1 0 1 
+
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);

@@ -1,0 +1,199 @@
+\documentclass{ctexbeamer} % 使用 ctexbeamer 支持中文
+\usetheme{Madrid}         % 经典的学术风主题
+\usecolortheme{default}   % 默认配色
+
+% 引入一些写代码和画图的宏包
+\usepackage{listings}
+\usepackage{xcolor}
+
+% 封面信息设置
+\title{迷宫：多入口多出口的生成与寻路}
+\subtitle{基于并查集与栈、队列的综合应用}
+\author{叶信南 \\ 学号：2025081001024}
+\institute{UESTC} 
+\date{\today}
+
+\begin{document}
+
+% 第一页：封面
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% 第二页：目录
+\begin{frame}{汇报目录}
+    \tableofcontents
+\end{frame}
+
+% --- 第一部分 ---
+\section{需求与要点分析}
+\begin{frame}{需求与要点分析}
+    \textbf{核心需求：} 自动生成多入口与多出口的迷宫地图，并寻找\textbf{所有}通路（4级要求，5分），结合\textbf{栈与队列}。
+    
+    \vspace{0.5cm}
+    
+    \textbf{要点分析：}
+    \begin{itemize}
+        \item \textbf{连通性保障}：保证随机生成的迷宫中，至少存在一条通路。
+        \pause
+        \item \textbf{多解性保障}：标准迷宫算法只产生唯一解，如何使其拥有“多条通路”？
+        \pause
+        \item \textbf{状态调度与回溯}：如何优雅地处理多入口并发，并在搜索时穷尽所有路线而不陷入死循环？
+    \end{itemize}
+\end{frame}
+
+% --- 第二部分 ---
+\section{迷宫生成算法 (并查集)}
+\begin{frame}[fragile]{迷宫生成：坐标结构体}
+    % 使用 lstlisting 环境展示代码，设置基本格式
+    \begin{lstlisting}[language=C++, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, commentstyle=\color{green!50!black}, showstringspaces=false, frame=single]
+// 坐标结构体
+struct Point 
+{
+    int x, y;
+    bool operator==(const Point& other) const 
+    {
+        return x == other.x && y == other.y;
+    }
+};
+    \end{lstlisting}
+    \pause
+\begin{block}{运算符重载}
+    C++编译器在代码内部声明前，不知道结构体Point的比较逻辑。这里我们认为当横纵坐标都相等时Point结构体才算相等
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{迷宫生成：并查集（DSU）}
+    为了高效判断随机拆墙时是否会产生“环”，我们引入了并查集。
+    % 使用 lstlisting 环境展示代码，设置基本格式
+    \begin{lstlisting}[language=C++, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, commentstyle=\color{green!50!black}, showstringspaces=false, frame=single]
+struct DSU {
+    vector<int> parent;
+    DSU(int n) {
+        parent.resize(n);
+        iota(parent.begin(), parent.end(), 0); 
+    }
+    int find(int i) { // 核心：路径压缩
+        if (parent[i] == i) return i;
+        return parent[i] = find(parent[i]); 
+    }
+    bool unite(int i, int j) {
+        int root_i = find(i), root_j = find(j);
+        if (root_i != root_j) {
+            parent[root_i] = root_j;
+            return true; // 发生合并
+        }
+        return false; // 已在同一集合
+    }
+};
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{迷宫生成：并查集（DSU）}
+    \begin{itemize}
+        \item \textbf{初始化 (\texttt{iota})}：利用现代 C++ 标准库函数，以 $\mathcal{O}(N)$ 的时间复杂度快速完成所有独立连通块（房间）的自环映射。
+        \pause
+        \vspace{0.3cm}
+        \item \textbf{路径压缩 (\texttt{find})}：在递归查找根节点时，将查找路径上的所有节点直接挂载到根节点上。结合这种启发式合并，单次查询的均摊时间复杂度逼近 $\mathcal{O}(\alpha(N))$，其中 $\alpha$ 为反阿克曼函数，在实际应用中几乎可视为常数 $\mathcal{O}(1)$。
+        \pause
+        \vspace{0.3cm}
+        \item \textbf{布尔类型的返回值 (\texttt{unite})}：
+        \begin{itemize}
+            \item 返回 \texttt{true}：代表图增加了一条树边，房间连通。
+            \item 返回 \texttt{false}：\textbf{判断成环的关键} ，为后续“5\% 概率人为保留环路”的迷宫多解性设计提供判断。
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{迷宫生成：随机化 Kruskal 算法}
+    在这里，我们采用\textbf{图论建树}的思想生成完美迷宫：
+    \begin{block}{生成逻辑}
+        将迷宫的“房间”视为图的\textbf{顶点}，“墙壁”视为\textbf{边}。打乱所有墙壁的顺序，利用 \textbf{并查集 (DSU)} 判断相邻房间是否连通。若不连通，则拆除墙壁并合并集合。
+    \end{block}
+    \pause
+    具体来说，\textbf{处理逻辑如下:}
+    \begin{itemize}
+        \item 对于所有横纵坐标均为奇数的格子，我们都把它挖空
+        \item 对于其余的格子，我们在第一阶段的处理认为是墙壁
+    \end{itemize}
+    \pause
+    维护一个数组 $Wall$ ，里面存好我们所有的墙壁坐标。调用C++库函数 “shuffle”打乱该数组，为实现我们之后的随机删除做准备。
+\end{frame}
+\begin{frame}[fragile]{迷宫生成：随机化 Kruskal 算法}
+    % 使用 lstlisting 环境展示代码，设置基本格式
+    \begin{lstlisting}[language=C++,basicstyle=\ttfamily\scriptsize, keywordstyle=\color{blue}, commentstyle=\color{green!50!black}, showstringspaces=false, frame=single]
+// 并查集建树
+for (const auto& w : walls) {
+    if (dsu.unite(w.r1, w.r2)) {
+        maze[w.wx][w.wy] = 0; // 打通不连通的房间
+    } else {
+        // 【核心修改】：人为制造多条通路
+        uniform_real_distribution<> dis(0.0, 1.0);
+        if (dis(gen) < 0.05) {
+            maze[w.wx][w.wy] = 0;
+        }
+    }
+}
+    \end{lstlisting}
+\textbf{算法核心：环（Cycles）的制造}
+    \begin{itemize}
+        \item 完美的图论树结构会导致路径唯一，无法体现“寻找所有通路”的考点。
+        \item \textbf{解决方案}：在并查集判断出两个房间\textbf{已经连通}时，引入 $5\%$ 的随机概率，\textbf{强行拆除}这堵原本不该拆的墙。
+        \item \textbf{效果}：打破了树的结构，人为在迷宫中制造了环路，实现了多通路。
+    \end{itemize}
+\end{frame}
+% --- 第三部分 ---
+\section{搜索架构 (队列调度)}
+\begin{frame}{多入口调度：队列 (Queue) 的应用}
+    题目要求多入口、多出口，且强制使用队列。
+    
+    \vspace{0.5cm}
+    \textbf{设计模式：广度优先的任务调度器}
+    \begin{itemize}
+        \item \textbf{初始化}：将生成的多个入口坐标（如 $E_1, E_2, E_3$）压入 \texttt{std::queue} 中。
+        \item \textbf{执行流程}：主循环不断执行 \texttt{q.pop()}，取出一个入口点，交由底层的搜索模块进行寻路。
+        \item \textbf{优势}：外层队列负责“宏观的多起点调度”，逻辑解耦，极为清晰。
+    \end{itemize}
+\end{frame}
+
+% --- 第四部分 ---
+\section{全路径搜索 (栈与 DFS)}
+\begin{frame}{全路径搜索：栈 (Stack) 与深度优先回溯}
+    寻找“所有”通路不能使用 BFS，必须采用 DFS 结合状态回溯。
+    
+    \begin{block}{基于栈的回溯搜索机制}
+        在获取到队列分配的起点后，利用 \textbf{系统调用栈 (递归)} 或 \texttt{std::stack} 模拟路径探索：
+        \begin{enumerate}
+            \item \textbf{前进 (Push)}：走到新节点，将其压栈，并标记为\textbf{已访问}。
+            \item \textbf{结算}：若触达任意出口，记录当前栈内路径，但不停止搜索。
+            \item \textbf{回退 (Pop) [核心]}：当某节点四个方向皆不可行或已探索完毕，将其出栈，并\textbf{严格撤销其访问标记 (\texttt{visited = false})}。
+        \end{enumerate}
+    \end{block}
+    
+    撤销标记是点睛之笔，它允许其他绕行的路线再次经过该点，从而实现“穷举所有通路”。
+\end{frame}
+
+% --- 第五部分 ---
+\section{实验成果展示}
+\begin{frame}{实验成果演示}
+    \centering
+    \Large \textbf{（这里留白，答辩前截图放一张你控制台里跑出来的绿色迷宫图！）}
+    
+    \vspace{1cm}
+    \normalsize
+    \begin{itemize}
+        \item 成功生成 $15 \times 15$ 带环迷宫。
+        \item 稳定支持 $N$ 起点 $M$ 终点的并发调度。
+        \item 配合 ANSI 终端转义序列，实现了路径的绿色高亮可视化渲染。
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \Huge \textbf{感谢各位老师聆听！} \\
+    \vspace{0.5cm}
+    \Large \textbf{欢迎提问}
+\end{frame}
+
+\end{document}
