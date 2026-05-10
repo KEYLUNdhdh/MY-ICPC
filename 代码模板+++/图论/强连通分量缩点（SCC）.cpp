@@ -9,21 +9,22 @@ struct SCC
     vector<int> stk;
     vector<int> dfn, low, bel;
     int cur, cnt;
+
     SCC() {}
     SCC(int n_)
     {
         init(n_);
     }
-    //0 - index
+    //1 - index
     void init(int n_)
     {
         n = n_;
-        adj.assign(n, {});
-        dfn.assign(n, -1);
-        low.resize(n);
-        bel.assign(n, -1);
+        adj.assign(n + 1, {});
+        dfn.assign(n + 1, -1);
+        low.resize(n + 1);
+        bel.assign(n + 1, -1);
         stk.clear();
-        cur = cnt = 0;
+        cur = cnt = 1;
     }
 
     void addEdge(int u, int v)
@@ -37,12 +38,12 @@ struct SCC
         stk.push_back(x);
         for(auto y : adj[x])
         {
-            if(dfn[y] == -1)
+            if(!dfn[y])
             {
                 dfs(y);
                 low[x] = min(low[x], low[y]);
             }
-            else if(bel[y] == -1)
+            else if(!bel[y])
             {
                 low[x] = min(low[x], dfn[y]);
             }
@@ -61,7 +62,7 @@ struct SCC
 
     vector<int> work()
     {
-        for (int i = 0;i < n;i++)
+        for (int i = 1;i <= n;i++)
         {
             if(dfn[i] == -1)
                 dfs(i);

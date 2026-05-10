@@ -12,70 +12,70 @@ using i64 = long long;
 struct SCC
 {
     int n;
-    vector<vector<int   >> adj;
+    vector<vector<int>> adj;
     vector<int> stk;
     vector<int> dfn, low, bel;
     int cur, cnt;
+    
     SCC() {}
-    SCC(int n_)
-    {
-        init(n_);
-    }
-    //注意这里是0 -index
-    //如果题目为从1开始的点，我们在插入边的时候统一减一
+    SCC(int n_) { init(n_); }
+    
+    // 1-index
+    //我们缩点后的大的点也从1 -index开始
     void init(int n_)
     {
         n = n_;
-        adj.assign(n, {});
-        dfn.assign(n, -1);
-        low.resize(n);
-        bel.assign(n, -1);
+        adj.assign(n + 1, vector<int>()); // 开 n+1 的空间
+        dfn.assign(n + 1, 0);             // 0 表示未访问
+        low.resize(n + 1);
+        bel.assign(n + 1, 0);             // 0 表示还未分配到任何 SCC 中
         stk.clear();
-        cur = cnt = 0;
+        cur = cnt = 1;                    // 时间戳和连通分量编号都从 1 开始
     }
-    //u -> v
+
     void addEdge(int u, int v)
     {
         adj[u].push_back(v);
     }
+
     void dfs(int x)
     {
-        dfn[x] = low[x] = cur++;// 一进门，先领个时间戳，并且一开始能回溯到的最早时间就是自己
-        stk.push_back(x);// 进栈，表示正在处理中，还没归属
+        dfn[x] = low[x] = cur++; // 刚来这座城市，发时间戳。目前最老只能回到自己。
+        stk.push_back(x);        // 住进客栈
+
         for(auto y : adj[x])
         {
-            if(dfn[y] == -1)//// 如果邻居 y 还没被访问过
+            if(!dfn[y]) // 发现一座从未去过的新城市
             {
-                dfs(y);//往下搜
-                // 等 y 搜完回来了，用 y 能到达的最早时间来更新 x，因为此时y已经完整跑完了dfs
+                dfs(y);// 派人去探索 y
+                // y 探索回来了。如果 y 找到了通往远古时期的暗道，x 借着 y 的光，也能回去！
                 low[x] = min(low[x], low[y]);
             }
-            else if(bel[y] == -1)
+            else if(!bel[y]) // y 以前去过，而且 y 还在客栈里！说明发现了一条“返祖边”（形成环了）！
             {
-                // 如果 y 访问过，且 bel[y] 是 -1，说明 y 还在栈里！
-                // 这意味着 x 找到了一条“返祖边”连向了老祖宗 y，构成了环
-                low[x] = min(low[x], dfn[y]);//我们用y的时间戳更新low[x],因为x可以往回到达y
+                // 直接借用 y 的时间戳，更新 x 的时光机
+                low[x] = min(low[x], dfn[y]);
             }
         }
-        // 如果搜完一圈发现，自己能回溯到的最早节点就是自己
-        // 说明自己就是这个“环/强连通分量”的最高点（根头目）
+
+        // 探索完所有邻居后，结算！
         if(dfn[x] == low[x])
         {
             int y;
-            do{
-                y = stk.back();// 把栈里在自己之上的兄弟全弹出来
-                bel[y] = cnt;// 给他们统一下发同一个新的身份证号 cnt
+            do {
+                y = stk.back();// 把客栈最顶上的人赶出来
+                bel[y] = cnt; // 给他们发同一个圈子的编号
                 stk.pop_back();
-            } while (y != x);// 直到把自己也弹出来为止
-            cnt++;// 编号用完了，下一个环用新编号
+            } while (y != x);// 一直赶，直到把 x 自己也赶出来为止
+            cnt++;// 圈子总数 + 1
         }
     }
 
     vector<int> work()
     {
-        for (int i = 0;i < n;i++)
+        for (int i = 1; i <= n; i++) // 1-index 遍历
         {
-            if(dfn[i] == -1)
+            if(!dfn[i])
                 dfs(i);
         }
         return bel;

@@ -37,7 +37,54 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int n, m;
+    cin >> n >> m;
+    vector<int> ind(n + 1, 0), oud(n + 1, 0);
+    vector<vector<int>> adj(n + 1);
 
+    vector<int> cur(n + 1, 0);
+    for (int i = 0; i < m;i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        oud[u]++;
+        ind[v]++;
+    }
+
+    for (int i = 1; i <= n;i++)
+    {
+        if(ind[i] != oud[i] || (n > 1 && ind[i] == 0))
+        {
+            cout << -1;
+            return;
+        }
+    }
+
+    vector<int> ans;
+
+    auto dfs = [&](auto self, int u) -> void
+    {
+        while(cur[u] < adj[u].size())
+        {
+            int v = adj[u][cur[u]++];
+            self(self, v);
+        }
+
+        ans.push_back(u);
+    };
+
+    dfs(dfs, 1);
+
+    if(ans.size() != m + 1)
+    {
+        cout << -1;
+        return;
+    }
+
+    for (int i = ans.size() - 1; i >= 0;i--)
+        cout << ans[i] << " ";
+    
 }
 
 signed lyc_fan_club()
@@ -45,7 +92,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
 

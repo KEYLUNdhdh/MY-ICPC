@@ -37,7 +37,48 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int n, x;
+    cin >> n >> x;
+    vector<int> a(n, 0);
+    for (int i = 0; i < n;i++)
+        cin >> a[i];
+    vector<vector<pll>> adj(n * 2);
 
+    for (int i = n; i < (n * 2);i++)
+    {
+        adj[i].push_back({1, (i + 1) % n + n});
+        adj[i].push_back({0, i - n});
+    }
+    for (int i = 0; i < n;i++)
+    {
+        adj[i].push_back({1, (i + a[i]) % n + n});
+    }
+
+    priority_queue<pll, vector<pll>, greater<pll>> pq;
+    pq.push({0, 0});
+
+    vector<i64> ans(n * 2, INF);
+    ans[0] = 0;
+    while(!pq.empty())
+    {
+        auto [dis, u] = pq.top();
+        pq.pop();
+
+        if(dis > ans[u])
+            continue;
+
+        ans[u] = dis;
+        for(auto &[w, v] : adj[u])
+        {
+            if(ans[u] + w < ans[v])
+            {
+                ans[v] = ans[u] + w;
+                pq.push({ans[v], v});
+            }
+        }
+    }
+
+    cout << ans[x];
 }
 
 signed lyc_fan_club()
@@ -45,7 +86,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
 
