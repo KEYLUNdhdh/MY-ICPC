@@ -70,3 +70,48 @@ struct SCC
         return bel;
     }
 };
+
+struct TwoSAT
+{
+    int n;
+    SCC scc;
+    vector<int> ans;
+
+    TwoSAT() {}
+    TwoSAT(int n_)
+    {
+        init(n_);
+    }
+
+    void init(int n_)
+    {
+        n = n_;
+        scc.init(2 * n);
+        ans.assign(n + 1, 0);
+    }
+
+    int getNode(int u, bool state)
+    {
+        return u + state * n;
+    }
+
+    void addClause(int u, bool fu, int v, bool fv)
+    {
+        scc.addEdge(getNode(u, !fu), getNode(v, fv));
+        scc.addEdge(getNode(v, !fv), getNode(u, fu));
+    }
+
+    bool sol()
+    {
+        scc.work();
+
+        for (int i = 1; i <= n;i++)
+        {
+            if(scc.bel[getNode(i, false)] == scc.bel[getNode(i, true)])
+                return false;
+
+            ans[i] = scc.bel[getNode(i, true)] < scc.bel[getNode(i, false)];
+        }
+        return true;
+    }
+};

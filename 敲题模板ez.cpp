@@ -18,7 +18,7 @@ typedef pair<int, int> pii;
 typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
 typedef pair<i128, i128> pllll;
-mt19937 rnd(time(0));
+mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 template<class T>
 void chmin(T &a, T b) 

@@ -37,8 +37,8 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-
-}
+    
+}   
 
 signed lyc_fan_club()
 {
