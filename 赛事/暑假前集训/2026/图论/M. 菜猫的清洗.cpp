@@ -1,8 +1,39 @@
 #include <bits/stdc++.h>
+#define lyc_fan_club main
+#define debug(x) { cerr << #x << " = " << x << "\n"; }
+#define debugarr(x){        \
+    cerr << #x << " : ";    \
+    for(auto v : x)         \
+    cerr << v << " ";       \
+    cerr << "\n";           \
+}
+#define cutline { cerr << "----------------------\n"; }
 using namespace std;
 using i64 = long long;
+using u64 = unsigned long long;
+using i128 = __int128;
+using ld = long double;
+using db = double;
+typedef pair<int, int> pii;
+typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
-const i64 INF = 2e18;
+typedef pair<i128, i128> pllll;
+mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
+
+template<class T>
+void chmin(T &a, T b) 
+{
+    if (a > b) 
+        a = b;
+}
+
+template<class T>
+void chmax(T &a, T b) 
+{
+    if (a < b) 
+        a = b;
+}
+constexpr i64 MOD = 998244353, INF = 2e18;
 
 struct MCFGraph
 {
@@ -44,11 +75,11 @@ struct MCFGraph
         adj[to].push_back({from, 0, 0, -cost, (int)adj[from].size() - 1});
     }
 
-    pll work(int s, int t)
+    vector<i64> work(int s, int t)
     {
         i64 maxFlow = 0;
         i64 minCost = 0;
-
+        vector<i64> ans;
         while(1)
         {
             priority_queue<pll, vector<pll>, greater<pll>> pq;
@@ -86,7 +117,7 @@ struct MCFGraph
             if(dist[t] == INF)
                 break;
 
-            for (int i = 0; i <= n; i++)
+            for (int i = 0; i <= n;i++)
             {
                 if(dist[i] != INF)
                     h[i] += dist[i];
@@ -102,7 +133,7 @@ struct MCFGraph
 
             maxFlow += push;
             minCost += push * h[t];
-
+            ans.push_back(push * h[t]);
             for (int v = t; v != s; v=  prevV[v])
             {
                 int u = prevV[v];
@@ -113,6 +144,79 @@ struct MCFGraph
                 adj[v][rev].flow -= push;
             }
         }
-        return {maxFlow, minCost};
+        return ans;
     }
 };
+
+struct func
+{
+    i64 a, b, c;
+};
+
+void solve()
+{
+    int n, m;
+    cin >> n >> m;
+
+    vector<func> f(n + 1);
+    set<i64> st;
+    for (int i = 1; i <= n;i++)
+    {
+        cin >> f[i].a >> f[i].b >> f[i].c;
+
+        i64 mid = -(f[i].b) / (2 * f[i].a);
+        if(mid < 1)
+            mid = 1;
+        else if(mid > m)
+            mid = m;
+        i64 l = max<i64>(mid - n, 1);
+        i64 r = min<i64>(mid + n, m);
+
+        for (int j = l; j <= r;j++)
+            st.insert(j);
+    }
+
+    vector<i64> nl(st.begin(), st.end());
+
+    int s = 0;
+    int t = n + nl.size() + 1;
+
+    MCFGraph mcfg(t);
+
+    for (int i = 1; i <= n;i++)
+        mcfg.addEdge(s, i, 1, 0);
+
+    for (int i = 1; i <= nl.size();i++)
+        mcfg.addEdge(n + i, t, 1, 0);
+
+    for (int i = 1; i <= n;i++)
+    {
+        for (int j = 1; j <= nl.size();j++)
+        {
+            i64 id = nl[j - 1];
+            i64 cost = f[i].a * id * id + f[i].b * id + f[i].c;
+            mcfg.addEdge(i, n + j, 1, cost);
+        }
+    }
+
+    vector<i64> ans = mcfg.work(s, t);
+
+    for (int i = 0; i < ans.size();i++)
+    {
+        ans[i] = ans[i] + (i > 0 ? ans[i - 1] : 0);
+        cout << ans[i] << " ";
+    }
+    cout << "\n";
+}
+
+signed lyc_fan_club()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int T = 1;
+    cin >> T;
+    while(T--)
+        solve();
+
+    return 0;
+}

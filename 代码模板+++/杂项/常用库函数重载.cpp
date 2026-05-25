@@ -28,6 +28,7 @@ void chmax(T &a, T b) {
     }
 }
 
-i128 gcd(i128 a, i128 b) {
+i128 gcd(i128 a, i128 b) 
+{
     return b ? gcd(b, a % b) : a;
 }

@@ -42,6 +42,17 @@ struct DSU
         part--;
         return true;
     }
+    //x -> y
+    void pretoSuf(int x, int y)
+    {
+        x = find(x);
+        y = find(y);
+        if (x == y)
+            return;
+        f[x] = y;
+        siz[y] += siz[x];
+        part--;
+    }
     int size(int x)
     {
         return siz[find(x)];

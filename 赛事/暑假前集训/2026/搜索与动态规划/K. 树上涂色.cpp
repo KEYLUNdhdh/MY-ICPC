@@ -35,26 +35,12 @@ void chmax(T &a, T b)
 }
 constexpr i64 MOD = 998244353, INF = 1e9;
 
-const u64 MASK = rnd();
-
-struct TreeHasher
-{
-    static u64 shift(u64 x)
-    {
-        x ^= MASK;
-        x ^= x << 13;
-        x ^= x >> 7;
-        x ^= x << 17;
-        x ^= MASK;
-        return x;
-    }
-};
-
 void solve()
 {
     int n;
     cin >> n;
     vector<vector<int>> adj(n + 1);
+
     for (int i = 1; i < n;i++)
     {
         int u, v;
@@ -63,54 +49,46 @@ void solve()
         adj[v].push_back(u);
     }
 
-    vector<u64> hashD(n + 1, 0);
-    vector<u64> hashU(n + 1, 0);
-    vector<u64> hashF(n + 1, 0);
-
-    auto dfsDown = [&](auto self, int u, int p) -> u64
+    vector<i64> siz(n + 1, 0);
+    vector<i64> ans(n + 1, 0);
+    auto dfs1 = [&](auto self, int u, int p) -> i64
     {
-        hashD[u] = 1;
+        siz[u] = 1;
         for(int v : adj[u])
         {
             if(v == p)
                 continue;
 
-            hashD[u] += TreeHasher::shift(self(self, v, u));
+            siz[u] += self(self, v, u);
+            ans[u] += ans[v];
         }
-        return hashD[u];
+        ans[u] += siz[u];
+        return siz[u];
     };
 
-    auto dfsUp = [&](auto self, int u, int p) -> void
+    dfs1(dfs1, 1, 0);
+    debug(ans[1])
+
+    auto dfs2 = [&](auto self, int u, int p) -> void
     {
         for(int v : adj[u])
         {
             if(v == p)
                 continue;
 
-            hashU[v] = hashD[u] - TreeHasher::shift(hashD[v]);
-            if(p != 0)
-                hashU[v] += TreeHasher::shift(hashU[u]);
+            ans[v] = ans[u] + n - siz[v] - siz[v];
             self(self, v, u);
         }
     };
 
-    dfsDown(dfsDown, 1, 0);
-    dfsUp(dfsUp, 1, 0);
+    dfs2(dfs2, 1, 0);
+    debug(ans[1])
 
-    map<u64, i64> mp;
-    hashF[1] = hashD[1];
-    mp[hashF[1]]++;
-    for (int i = 2; i <= n;i++)
-    {
-        hashF[i] = hashD[i] + TreeHasher::shift(hashU[i]);
-        mp[hashF[i]]++;
-    }
+    i64 maxx = 0;
+    for (int i = 1; i <= n;i++)
+        chmax(maxx, ans[i]);
 
-    i64 ans = 0;
-    for(auto &[hash, cnt] : mp)
-        ans += cnt * (cnt - 1) / 2;
-
-    cout << ans;
+    cout << maxx;
 }
 
 signed lyc_fan_club()

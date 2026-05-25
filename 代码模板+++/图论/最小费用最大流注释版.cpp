@@ -96,7 +96,9 @@ struct MCFGraph
                 break;
 
             // 2. 极为关键的一步：更新全部节点的势能
-            for (int i = 1; i <= n;i++)
+            // 我们从 0 开始遍历，传入的点可能是1 - index但是不影响。
+            // 如果我们建了一个超级源点 S = 0 ，这个可以保证我们会遍历到超级源点
+            for (int i = 0; i <= n;i++)
             {
                 if(dist[i] != INF)
                     h[i] += dist[i];
@@ -130,3 +132,4 @@ struct MCFGraph
         return {maxFlow, minCost};
     }
 };
+

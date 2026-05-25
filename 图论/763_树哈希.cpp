@@ -34,7 +34,6 @@ void chmax(T &a, T b)
         a = b;
 }
 constexpr i64 MOD = 998244353, INF = 1e9;
-
 const u64 MASK = rnd();
 
 struct TreeHasher
@@ -49,7 +48,6 @@ struct TreeHasher
         return x;
     }
 };
-
 void solve()
 {
     int n;
@@ -63,54 +61,24 @@ void solve()
         adj[v].push_back(u);
     }
 
-    vector<u64> hashD(n + 1, 0);
-    vector<u64> hashU(n + 1, 0);
-    vector<u64> hashF(n + 1, 0);
-
-    auto dfsDown = [&](auto self, int u, int p) -> u64
-    {
-        hashD[u] = 1;
-        for(int v : adj[u])
-        {
-            if(v == p)
-                continue;
-
-            hashD[u] += TreeHasher::shift(self(self, v, u));
-        }
-        return hashD[u];
-    };
-
-    auto dfsUp = [&](auto self, int u, int p) -> void
-    {
-        for(int v : adj[u])
-        {
-            if(v == p)
-                continue;
-
-            hashU[v] = hashD[u] - TreeHasher::shift(hashD[v]);
-            if(p != 0)
-                hashU[v] += TreeHasher::shift(hashU[u]);
-            self(self, v, u);
-        }
-    };
-
-    dfsDown(dfsDown, 1, 0);
-    dfsUp(dfsUp, 1, 0);
-
+    vector<u64> hash(n + 1, 0);
     map<u64, i64> mp;
-    hashF[1] = hashD[1];
-    mp[hashF[1]]++;
-    for (int i = 2; i <= n;i++)
+    auto dfs = [&](auto self, int u, int p) -> u64
     {
-        hashF[i] = hashD[i] + TreeHasher::shift(hashU[i]);
-        mp[hashF[i]]++;
-    }
+        hash[u] = 1;
+        for(int v : adj[u])
+        {
+            if(v == p)
+                continue;
 
-    i64 ans = 0;
-    for(auto &[hash, cnt] : mp)
-        ans += cnt * (cnt - 1) / 2;
-
-    cout << ans;
+            hash[u] += TreeHasher::shift(self(self, v, u));
+        }
+        return hash[u];
+    };
+    dfs(dfs, 1, 0);
+    for (int i = 1; i <= n;i++)
+        mp[hash[i]]++;
+    cout << mp.size();
 }
 
 signed lyc_fan_club()
