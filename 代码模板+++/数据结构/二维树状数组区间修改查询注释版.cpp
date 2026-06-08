@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 //详见typora
+//树状数组不能由0下标，因为 0 & (-0) = 0,死循环
 template<typename T>
 struct FenWick
 {

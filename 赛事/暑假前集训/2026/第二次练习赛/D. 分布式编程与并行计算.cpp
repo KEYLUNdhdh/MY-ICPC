@@ -36,6 +36,9 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int k, q;
+    cin >> k >> q;
+
     
 }
 
@@ -44,7 +47,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
 

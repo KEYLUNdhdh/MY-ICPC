@@ -15,7 +15,6 @@ using i128 = __int128;
 using ld = long double;
 using db = double;
 typedef pair<int, int> pii;
-typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
 typedef pair<i128, i128> pllll;
 mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
@@ -33,37 +32,57 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
-constexpr i64 MOD = 998244353, INF = 1e9;
+constexpr i64 MOD = 1e9 + 7, INF = 1e9;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<int> a(n + 1, 0);
-    vector<i64> pos(n + 1, 0);
-    for (int i = 1; i <= n;i++)
-    {
-        cin >> a[i];
-        pos[a[i]] = i;
-    }
+    int n, m, q;
+    cin >> n >> m >> q;
 
-    vector<vector<i64>> dp(n + 1, vector<i64>(n + 1, INF));
-    for (int i = 1; i <= n;i++)
-        dp[i][i] = 0;
-
-    for (int len = 2; len <= n;len++)
+    vector<vector<i64>> list(n + 1, vector<i64>(m + 1, 0));
+    for (int k = 1; k <= n;k++)
     {
-        for (int l = 1; l <= n;l++)
+        for (int i = 1; i <= m;i++)
         {
-            int r = l + len - 1;
-            if(r > n)
-                break;
-
-            for (int k = l; k < r;k++)
-                chmin(dp[l][r], dp[l][k] + dp[k + 1][r] + abs(pos[l] - pos[k + 1]));
+            for (int j = 1; j <= m;j++)
+            {
+                i64 ele;
+                cin >> ele;
+                list[k][j] = (list[k][j] + ele) % MOD;
+            }
         }
     }
-    cout << dp[1][n];
+
+    while(q--)
+    {
+        int x, y;
+        i64 k;
+        cin >> x >> y >> k;
+
+        if(x != y)
+        {
+            for (int i = 1; i <= n;i++)
+                list[i][y] = (list[i][y] + list[i][x] * k) % MOD;
+        }
+        else
+        {
+            for (int i = 1; i <= n;i++)
+                list[i][x] = (list[i][x] * k) % MOD;
+        }
+
+    }
+
+    
+    for (int i = 1; i <= n;i++)
+    {
+        i64 ans = 0;
+
+        for (int j = 1; j <= m;j++)
+            ans = (ans + list[i][j]) % MOD;
+
+        cout << (ans + MOD) % MOD << "\n";
+    }
+
 }
 
 signed lyc_fan_club()

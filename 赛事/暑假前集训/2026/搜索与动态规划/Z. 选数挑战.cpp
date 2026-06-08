@@ -15,7 +15,6 @@ using i128 = __int128;
 using ld = long double;
 using db = double;
 typedef pair<int, int> pii;
-typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
 typedef pair<i128, i128> pllll;
 mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
@@ -39,31 +38,57 @@ void solve()
 {
     int n;
     cin >> n;
-    vector<int> a(n + 1, 0);
-    vector<i64> pos(n + 1, 0);
+
+    vector<i64> a(n + 1, 0);
     for (int i = 1; i <= n;i++)
-    {
         cin >> a[i];
-        pos[a[i]] = i;
-    }
 
-    vector<vector<i64>> dp(n + 1, vector<i64>(n + 1, INF));
-    for (int i = 1; i <= n;i++)
-        dp[i][i] = 0;
+    int q;
+    cin >> q;
 
-    for (int len = 2; len <= n;len++)
+    vector<vector<vector<int>>> memo(51, vector<vector<int>>(51, vector<int>(51, -1)));
+
+    while(q--)
     {
-        for (int l = 1; l <= n;l++)
-        {
-            int r = l + len - 1;
-            if(r > n)
-                break;
+        int x, y, z;
+        cin >> x >> y >> z;
 
-            for (int k = l; k < r;k++)
-                chmin(dp[l][r], dp[l][k] + dp[k + 1][r] + abs(pos[l] - pos[k + 1]));
+        vector<int> tmp = {x, y, z};
+        sort(tmp.begin(), tmp.end());
+
+        x = tmp[0], y = tmp[1], z = tmp[2];
+        if(memo[x][y][z] != -1)
+        {
+            if(memo[x][y][z])
+                cout << "Yes\n";
+            else
+                cout << "No\n";
+
+            continue;
         }
+
+        vector<i128> dp(11, 0);
+        dp[0] = 1;
+        for (int i = 1; i <= n;i++)
+        {
+            if(i == x || i == y || i == z)
+                continue;
+
+            if(a[i] > 87)
+                continue;
+
+            for (int c = 10; c >= 1;c--)
+            {
+                dp[c] |= (dp[c - 1] << a[i]);
+            }
+        }
+        int ans = (dp[10] >> 87) & 1;
+        memo[x][y][z] = ans;
+        if(ans)
+            cout << "Yes\n";
+        else
+            cout << "No\n";
     }
-    cout << dp[1][n];
 }
 
 signed lyc_fan_club()
@@ -71,7 +96,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    // cin >> T;
+    cin >> T;
     while(T--)
         solve();
 

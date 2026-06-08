@@ -36,7 +36,9 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-    
+    i64 n, s;
+    cin >> n >> s;
+    cout << s / n / n << "\n";
 }
 
 signed lyc_fan_club()

@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/hash_policy.hpp>
 #define lyc_fan_club main
 #define debug(x) { cerr << #x << " = " << x << "\n"; }
 #define debugarr(x){        \
@@ -9,6 +11,7 @@
 }
 #define cutline { cerr << "----------------------\n"; }
 using namespace std;
+using namespace __gnu_pbds;
 using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
@@ -33,7 +36,7 @@ void chmax(T &a, T b)
         a = b;
 }
 constexpr i64 MOD = 998244353, INF = 1e9;
-
+//gp_hash_table
 void solve()
 {
     

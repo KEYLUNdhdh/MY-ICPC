@@ -89,13 +89,9 @@ constexpr int MOD = 9, INF = 1e9;
 
 void solve()
 {
-    string s;
-    cin >> s;
-    debug(s)
-    if(s.find("swufe") != string::npos)
-        cout << 200;
-    else
-        cout << 404;
+    vector<i64> a = {4, 3, 2, 1};
+    next_permutation(a.begin(), a.end());
+    debugarr(a)
 }
 
 signed lyc_fan_club()

@@ -1,0 +1,1 @@
+{"name":"Local: W","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\算法基础\\数论\\W. Faker vs Bin.cpp","tests":[{"id":1780751844515,"input":"5\n1 3\n2 3\n3 3\n4 3\n10 4\n","output":"Faker\nFaker\nFaker\nBin\nFaker\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\算法基础\\数论\\W. Faker vs Bin.cpp","group":"local","local":true}

@@ -36,6 +36,13 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int n, c, k;
+    cin >> n >> c >> k;
+
+    vector<int> a(n + 1, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> a[i];
+
     
 }
 

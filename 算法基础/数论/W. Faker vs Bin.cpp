@@ -36,7 +36,13 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-    
+    i64 n, k;
+    cin >> n >> k;
+
+    if(n % (k + 1) == 0)
+        cout << "Bin\n";
+    else
+        cout << "Faker\n";
 }
 
 signed lyc_fan_club()

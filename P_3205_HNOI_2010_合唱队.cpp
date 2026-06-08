@@ -36,6 +36,14 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int n;
+    cin >> n;
+    vector<int> a(n + 1, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> a[i];
+
+    vector<vector<array<int, 2>>> dp(n + 1, vector<array<int, 2>>(n + 1, {0, 0}));
+
     
 }
 

@@ -15,7 +15,6 @@ using i128 = __int128;
 using ld = long double;
 using db = double;
 typedef pair<int, int> pii;
-typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
 typedef pair<i128, i128> pllll;
 mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
@@ -39,31 +38,52 @@ void solve()
 {
     int n;
     cin >> n;
-    vector<int> a(n + 1, 0);
-    vector<i64> pos(n + 1, 0);
-    for (int i = 1; i <= n;i++)
+    map<char, int> mp;
+    for (int i = 0;i < n;i++)
     {
-        cin >> a[i];
-        pos[a[i]] = i;
+        char c;
+        cin >> c;
+        mp[c]++;
     }
 
-    vector<vector<i64>> dp(n + 1, vector<i64>(n + 1, INF));
-    for (int i = 1; i <= n;i++)
-        dp[i][i] = 0;
-
-    for (int len = 2; len <= n;len++)
+    if(mp.size() == 1)
     {
-        for (int l = 1; l <= n;l++)
-        {
-            int r = l + len - 1;
-            if(r > n)
-                break;
-
-            for (int k = l; k < r;k++)
-                chmin(dp[l][r], dp[l][k] + dp[k + 1][r] + abs(pos[l] - pos[k + 1]));
-        }
+        cout << 0;
+        return;
     }
-    cout << dp[1][n];
+    else if(mp.size() == 2)
+    {
+        int minn = INF;
+        for(auto [c, cnt] : mp)
+            chmin(minn, cnt);
+
+        cout << minn * 3;
+        return;
+    }
+
+    vector<int> tmp;
+    for(auto [c, cnt] : mp)
+        tmp.push_back(cnt);
+
+    sort(tmp.begin(), tmp.end());
+    int f = tmp[0], s = tmp[1], t = tmp[2];
+
+    vector<i128> comb(f + 1, -1);
+    comb[0] = comb[f] = 1;
+    for (int i = 1; i < f;i++)
+        comb[i] = comb[i - 1] * (f - i + 1) / i;
+
+    ld lhs = 1.5 * f;
+    ld rhs = 0;
+    i64 pol = 1ll << f;
+    for (int i = 0; i <= f; i++)
+    {
+        int up = 3 * min(s + i, t + f - i);
+        rhs += (ld)comb[i] * up / pol;
+    }
+    debug(lhs)
+    debug(rhs)
+    cout << fixed << setprecision(10) <<  lhs + rhs;
 }
 
 signed lyc_fan_club()

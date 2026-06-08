@@ -36,7 +36,8 @@ template<class T>
 T qpow(T a,T b,T MOD)
 {
     T res = 1;
-    a %= MOD;
+    a = (a % MOD + MOD) % MOD;
+
     while(b)
     {
         if(b & 1)

@@ -36,6 +36,9 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
+    int n, q;
+    cin >> n >> q;
+
     
 }
 

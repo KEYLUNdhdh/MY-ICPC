@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 using db = double;
+
 struct Gauss
 {
     static constexpr db EPS = 1e-8;// 精度容差

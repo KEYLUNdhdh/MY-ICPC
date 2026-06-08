@@ -36,15 +36,37 @@ constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-    
-}
+    int n;
+    cin >> n;
+    vector<i64> a(n + 1, 0);
+    priority_queue<i64, vector<i64> , greater<i64>> pq;
+    for (int i = 1; i <= n;i++)
+    {
+        cin >> a[i];
+        pq.push(a[i]);
+    }
+
+    i64 ans = 0;
+    while(pq.size() > 1)
+    {
+        i64 f = pq.top();
+        pq.pop();
+        i64 s = pq.top();
+        pq.pop();
+
+        ans += f + s;
+        pq.push(f + s);
+    }
+
+    cout << ans;
+}   
 
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
 

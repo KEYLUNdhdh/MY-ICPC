@@ -33,16 +33,42 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
-constexpr i64 MOD = 998244353, INF = 1e9;
+constexpr i64 MOD = 998244353, INF = 2e18;
 
+vector<int> p = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31};
 void solve()
 {
     i64 l, r;
     cin >> l >> r;
 
-    i64 ub = sqrt(r) + 1;
+    i64 ans = INF;
+    i64 anscnt = 0;
+    auto dfs = [&](auto self, int idx, i64 cur, i64 cnt, int precnt)
+    {
+        if(idx >= 11 || cur > r)
+            return;
 
-    
+        if(cur >= l && cur <= r)
+        {
+            if(anscnt < cnt)
+            {
+                anscnt = cnt;
+                ans = cur;
+            }
+            else if(anscnt == cnt && cur < ans)
+                ans = cur;
+        }
+        for (int i = 1; i <= precnt;i++)
+        {
+            if(cur * p[idx] > r)
+                return;
+            cur *= p[idx];
+            self(self, idx + 1, cur, cnt * (i + 1), i);
+        }
+    };
+
+    dfs(dfs, 0, 1, 1, 100);
+    cout << ans;
 }
 
 signed lyc_fan_club()
@@ -50,7 +76,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
 
