@@ -11,6 +11,7 @@ T ceilDiv(T n, T m) {
         return n / m;
     }
 }
+
 template<class T>
 T floorDiv(T n, T m) {
     if (n >= 0) {

@@ -24,6 +24,8 @@ namespace NTT
     vector<i64> rev;
     void initRev(int limit)
     {
+        if(limit <= 1)
+            return;
         if(rev.size() == limit)
             return;
         int l = __builtin_ctz(limit);
@@ -35,7 +37,9 @@ namespace NTT
     void transform(vector<i64> &a, int flag)
     {
         int n = a.size();
-
+        if(n == 1)
+            return;
+            
         initRev(n);
         for(int i = 0;i < n;i++)
             if(i < rev[i])

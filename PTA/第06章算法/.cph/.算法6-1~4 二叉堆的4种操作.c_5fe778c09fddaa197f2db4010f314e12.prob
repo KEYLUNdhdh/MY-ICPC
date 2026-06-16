@@ -1,0 +1,1 @@
+{"name":"Local: 算法6-1~4 二叉堆的4种操作","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第06章算法\\算法6-1~4 二叉堆的4种操作.c","tests":[{"id":1781531986230,"input":"10\n6\n1 5 3 7 9 8\n2","output":"min = 1\n2\n5\n3\n7\n9\n8"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第06章算法\\算法6-1~4 二叉堆的4种操作.c","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: 代码5-27 还原二叉树","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第05章练习\\代码5-27 还原二叉树.c","tests":[{"id":1781527517598,"input":"9\nABDFGHIEC\nFDHGIBEAC","output":"5"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第05章练习\\代码5-27 还原二叉树.c","group":"local","local":true}

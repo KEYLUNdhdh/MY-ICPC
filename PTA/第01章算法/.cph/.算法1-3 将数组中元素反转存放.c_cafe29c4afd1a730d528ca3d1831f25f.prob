@@ -1,0 +1,1 @@
+{"name":"Local: 算法1-3 将数组中元素反转存放","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第01章算法\\算法1-3 将数组中元素反转存放.c","tests":[{"id":1781254742697,"input":"5\n1 2 3 4 5","output":"5 4 3 2 1 "}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第01章算法\\算法1-3 将数组中元素反转存放.c","group":"local","local":true}

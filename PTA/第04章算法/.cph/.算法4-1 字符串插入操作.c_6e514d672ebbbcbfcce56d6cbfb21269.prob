@@ -1,0 +1,1 @@
+{"name":"Local: 算法4-1 字符串插入操作","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第04章算法\\算法4-1 字符串插入操作.c","tests":[{"id":1781512186551,"input":"This is a test.\nsimple-\n11","output":"This is a simple-test."}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第04章算法\\算法4-1 字符串插入操作.c","group":"local","local":true}

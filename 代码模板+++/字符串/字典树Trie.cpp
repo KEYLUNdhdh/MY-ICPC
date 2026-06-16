@@ -28,6 +28,8 @@ struct Trie
             return c - 'A' + 26;
         else if(c >= '0' && c <= '9')
             return c - '0' + 52;
+        return 69;
+
     }
     void insert(const string& s)
     {
@@ -67,5 +69,13 @@ struct Trie
             p = ch[p][u];
         }
         return pre[p];
+    }
+
+    void clear() 
+    {
+        ch.clear();
+        cnt.clear();
+        pre.clear();
+        newNode();
     }
 };

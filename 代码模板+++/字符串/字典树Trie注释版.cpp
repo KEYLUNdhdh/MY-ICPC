@@ -32,6 +32,8 @@ struct Trie
             return c - 'A' + 26;
         else if(c >= '0' && c <= '9')
             return c - '0' + 52;
+        return 69;// 如果是未定义字符，直接传到最末端兜底。
+
     }
     void insert(const string& s)
     {
@@ -71,5 +73,15 @@ struct Trie
             p = ch[p][u];
         }
         return pre[p];
+    }
+
+    // 用于处理多测的情况。
+    // 多测时直接开全局变量然后多次清空即可
+    void clear() 
+    {
+        ch.clear();
+        cnt.clear();
+        pre.clear();
+        newNode(); // 重新放一个根节点进去
     }
 };

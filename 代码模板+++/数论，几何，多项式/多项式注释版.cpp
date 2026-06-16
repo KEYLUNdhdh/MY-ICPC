@@ -9,7 +9,7 @@ const int G = 3;// 998244353的原根
 i64 qpow(i64 a, i64 b)
 {
     i64 res = 1;
-    a %= MOD;
+    a = (a % MOD + MOD) % MOD;
     while(b)
     {
         if(b & 1)
@@ -26,6 +26,8 @@ namespace NTT
     vector<i64> rev;
     void initRev(int limit)
     {
+        if(limit <= 1)
+            return;
         if(rev.size() == limit)
             return;
         int l = __builtin_ctz(limit);
@@ -37,7 +39,10 @@ namespace NTT
     void transform(vector<i64> &a, int flag)
     {
         int n = a.size();
-
+        // 🌟 关键修复：长度 <= 1 的多项式（常数）无需任何变换！
+        // 直接 return 避免了后续 rev 数组越界崩溃
+        if(n == 1)
+            return;
         initRev(n);
         for(int i = 0;i < n;i++)
             if(i < rev[i])
@@ -78,7 +83,9 @@ struct Poly
 
     // 构造函数
     Poly() {}
-    Poly(int size) : a(size, 0) {}
+    // ⚠️ 极其关键：加上 explicit，防止 C++ 把普通整数 1 错误地隐式转换为大小为 1 的 0 数组！
+    // 如 1 - (Poly)g, 这时候隐式转换会出现问题
+    explicit Poly(int size) : a(size, 0) {}
     Poly(const vector<i64> &a_) : a(a_) {}
     Poly(initializer_list<i64> a_) : a(a_) {}
 
@@ -177,7 +184,9 @@ struct Poly
     // 求逆：B = B * (2 - A * B) mod x^deg
     Poly inv(int deg) const 
     {
-        Poly res({qpow(a[0], MOD - 2)});
+        // 🌟 养成好习惯：使用你重载的安全访问符 (*this)[0]
+        // 防止别人恶意传入一个没有任何元素的空多项式导致 a[0] 越界
+        Poly res({qpow((*this)[0], MOD - 2)});
         int k = 1;
         while(k < deg)
         {
@@ -189,6 +198,7 @@ struct Poly
     }
 
     // 求对数 Ln：∫(A' / A) dx
+    // 同 exp 类似，这里的输入必须是 1，ln 1 = 0才有意义
     Poly ln(int deg) const
     {
         return (deriv() * inv(deg)).integr().modXk(deg);
@@ -197,7 +207,8 @@ struct Poly
     // 求指数 Exp：B = B * (1 - ln(B) + A) mod x^deg
     Poly exp(int deg) const 
     {
-        // 题目保证了 a[0] = 0，而 e^0 = 1，所以常数项初始化为 1    
+        // 这里的输入常数项必须是 0，e ^ 0 = 1才有意义
+        // 题目保证了 a[0] = 0，而 e^0 = 1，所以常数项初始化为 1   
         Poly res({1});
         int k = 1;
         while(k < deg)
@@ -207,6 +218,26 @@ struct Poly
             // 完美复刻牛顿迭代公式
             res = (res * (Poly({1}) - res.ln(k) + cur)).modXk(k);
         }
-        return res;
+        return res.modXk(deg);
+    }
+
+    // 多项式开平方 (牛顿迭代法)
+    Poly sqrt(int deg) const 
+    {
+        // 这里的常数项 1 是基于题目保证 a[0] = 1 的情况。
+        // 若 a[0] != 1，需要用二次剩余(Tonelli-Shanks)算出真实的 sqrt(a[0]) 填入这里
+        Poly res({1}); 
+        i64 inv2 = qpow(2, MOD - 2); // 1/2 的逆元
+        int k = 1;
+        
+        while(k < deg)
+        {
+            k <<= 1;
+            Poly cur = modXk(k);
+            // 完美复刻牛顿迭代公式：res = (res + A * res^{-1}) / 2
+            res = (res + cur * res.inv(k)) * inv2;
+            res = res.modXk(k);
+        }
+        return res.modXk(deg);
     }
 };

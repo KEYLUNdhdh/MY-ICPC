@@ -1,0 +1,1 @@
+{"name":"Local: 算法2-4 求单链表list中的元素个数，即表长","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章算法\\算法2-4 求单链表list中的元素个数，即表长.c","tests":[{"id":1781267164245,"input":"5\n1 2 3 4 5","output":"5"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章算法\\算法2-4 求单链表list中的元素个数，即表长.c","group":"local","local":true}

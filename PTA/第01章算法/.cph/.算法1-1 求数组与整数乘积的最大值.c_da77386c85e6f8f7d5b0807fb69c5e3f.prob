@@ -1,0 +1,1 @@
+{"name":"Local: 算法1-1 求数组与整数乘积的最大值","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第01章算法\\算法1-1 求数组与整数乘积的最大值.c","tests":[{"id":1781254593443,"input":"5 3\n123 45 678 9 10","output":"2034\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第01章算法\\算法1-1 求数组与整数乘积的最大值.c","group":"local","local":true}

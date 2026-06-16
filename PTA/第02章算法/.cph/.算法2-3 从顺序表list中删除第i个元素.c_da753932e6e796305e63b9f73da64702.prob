@@ -1,0 +1,1 @@
+{"name":"Local: 算法2-3 从顺序表list中删除第i个元素","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章算法\\算法2-3 从顺序表list中删除第i个元素.c","tests":[{"id":1781266853391,"input":"5\n1 2 3 4 5\n3","output":"1 2 4 5 "}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章算法\\算法2-3 从顺序表list中删除第i个元素.c","group":"local","local":true}

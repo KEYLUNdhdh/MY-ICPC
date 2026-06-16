@@ -1,0 +1,1 @@
+{"name":"Local: 代码2-15 一元多项式求导","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章练习\\代码2-15 一元多项式求导.c","tests":[{"id":1781277289822,"input":"3 4 -5 2 6 1 -2 0","output":"12 3 -10 1 6 0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章练习\\代码2-15 一元多项式求导.c","group":"local","local":true}
