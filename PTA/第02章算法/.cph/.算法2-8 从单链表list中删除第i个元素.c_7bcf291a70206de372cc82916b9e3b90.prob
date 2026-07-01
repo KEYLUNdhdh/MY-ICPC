@@ -1,1 +1,0 @@
-{"name":"Local: 算法2-8 从单链表list中删除第i个元素","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章算法\\算法2-8 从单链表list中删除第i个元素.c","tests":[{"id":1781274790512,"input":"5\n1 2 3 4 5\n3","output":"4: 5 4 2 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章算法\\算法2-8 从单链表list中删除第i个元素.c","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: B","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假前集训\\2026\\第三次练习赛\\B. 回归性原理.cpp","tests":[{"id":1781931697416,"input":"ababc\n2\nab\nabc\n","output":"3\n1\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假前集训\\2026\\第三次练习赛\\B. 回归性原理.cpp","group":"local","local":true}

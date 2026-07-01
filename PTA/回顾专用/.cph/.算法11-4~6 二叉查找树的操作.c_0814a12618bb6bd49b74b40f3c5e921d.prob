@@ -1,1 +1,0 @@
-{"name":"Local: 算法11-4~6 二叉查找树的操作","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\回顾专用\\算法11-4~6 二叉查找树的操作.c","tests":[{"id":1781605133216,"input":"8\n4 3 6 8 7 1 2 5\n9","output":"NotFound.\n错误：9不在树中。\nNotFound."}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\回顾专用\\算法11-4~6 二叉查找树的操作.c","group":"local","local":true}

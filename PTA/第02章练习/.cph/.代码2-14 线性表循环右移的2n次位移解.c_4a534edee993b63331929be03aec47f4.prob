@@ -1,1 +1,0 @@
-{"name":"Local: 代码2-14 线性表循环右移的2n次位移解","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章练习\\代码2-14 线性表循环右移的2n次位移解.c","tests":[{"id":1781277161992,"input":"6 2\n1 2 3 4 5 6","output":"5 6 1 2 3 4"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第02章练习\\代码2-14 线性表循环右移的2n次位移解.c","group":"local","local":true}

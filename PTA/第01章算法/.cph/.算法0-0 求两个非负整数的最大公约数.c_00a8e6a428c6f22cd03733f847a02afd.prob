@@ -1,1 +1,0 @@
-{"name":"Local: 算法0-0 求两个非负整数的最大公约数","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第01章算法\\算法0-0 求两个非负整数的最大公约数.c","tests":[{"id":1781254210085,"input":"73472 48503","output":"287"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\PTA\\第01章算法\\算法0-0 求两个非负整数的最大公约数.c","group":"local","local":true}
