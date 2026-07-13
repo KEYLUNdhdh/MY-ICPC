@@ -34,32 +34,59 @@ void chmax(T &a, T b)
         a = b;
 }
 constexpr i64 MOD = 998244353, INF = 1e9;
-u32 seed;
-inline u32 getnext()
-{
-    seed ^= seed << 13;
-    seed ^= seed >> 17;
-    seed ^= seed << 5;
-    return seed;
-}
 
 void solve()
 {
     int n;
-    cin >> n >> seed;
-
-    vector<u32> b(n + 1, 0);
-    u32 ans = 0;
+    cin >> n;
+    vector<int> a(n + 1);
+    vector<int> ok(n + 1, 0);
     for (int i = 1; i <= n;i++)
     {
-        seed = getnext();
-        for (int j = 1; j * i <= n;j++)
-            b[i * j] += seed;
-
-        ans ^= b[i];
+        cin >> a[i];
+        int k = sqrt(a[i]);
+        debug(k)
+        if (k * k == a[i])
+            ok[i] = 1;
     }
 
-    cout << ans;
+    vector<vector<int>> adj(n + 1);
+    for (int i = 1; i < n;i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    vector<int> sz(n + 1, 0);
+    i64 ans = 0;
+    auto dfs = [&](auto self, int u, int p) -> void
+    {
+        sz[u] = 1;
+        i64 f = 0, s = 0, t = 0;
+        for(int v : adj[u])    
+        {
+            if(v == p)
+                continue;
+
+            self(self, v, u);
+            sz[u] += sz[v];
+            t += s * sz[v];
+            s += f * sz[v];
+            f += sz[v];
+        }
+
+        if(ok[u])
+        {
+            int up = n - sz[u];
+            ans += t + s * up;
+            ans += s + f * up;
+        }
+    };
+
+    dfs(dfs, 1, 0);
+    cout << ans << "\n";
 }
 
 signed lyc_fan_club()
@@ -67,7 +94,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    // cin >> T;
+    cin >> T;
     while(T--)
         solve();
 

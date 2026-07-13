@@ -10,6 +10,7 @@
 #define cutline { cerr << "----------------------\n"; }
 using namespace std;
 using i64 = long long;
+using u32 = unsigned int;
 using u64 = unsigned long long;
 using i128 = __int128;
 using ld = long double;
@@ -34,12 +35,41 @@ void chmax(T &a, T b)
 }
 constexpr i64 MOD = 998244353, INF = 1e9;
 
+vector<string> duval(const string &s, i64 &ans)
+{
+    int n = s.length();
+    int i = 0;
+    vector<string> res;
+
+    while(i < n)
+    {
+        int j = i + 1, k = i;
+        while(j < n && s[j] >= s[k])
+        {
+            if(s[j] > s[k])
+                k = i;
+            else
+                k++;
+            j++;
+        }
+
+        while(i <= k)
+        {
+            ans ^= (i + j - k);
+            i += j - k;
+        }
+    }
+    // debugarr(res)
+    return res;
+}
+
 void solve()
 {
-    int k, q;
-    cin >> k >> q;
-
-    
+    string s;
+    cin >> s;
+    i64 ans = 0;
+    duval(s, ans);
+    cout << ans;
 }
 
 signed lyc_fan_club()

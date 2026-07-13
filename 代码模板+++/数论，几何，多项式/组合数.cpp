@@ -226,14 +226,14 @@ struct MInt
         res /= rhs;
         return res;
     }
-    friend constexpr std::istream &operator>>(std::istream &is, MInt &a) 
+    friend constexpr istream &operator>>(istream &is, MInt &a) 
     {
         i64 v;
         is >> v;
         a = MInt(v);
         return is;
     }
-    friend constexpr std::ostream &operator<<(std::ostream &os, const MInt &a) 
+    friend constexpr ostream &operator<<(ostream &os, const MInt &a) 
     {
         return os << a.val();
     }

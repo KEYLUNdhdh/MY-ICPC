@@ -1,106 +1,43 @@
-#include <bits/stdc++.h>
-#define lyc_fan_club main
-#define debug(x) { cerr << #x << " = " << x << "\n"; }
-#define debugarr(x){        \
-    cerr << #x << " : ";    \
-    for(auto v : x)         \
-        cerr << v << " ";   \
-    cerr << "\n";           \
-}
-#define cutline {cerr << "----------------------\n";}
-
+#include<iostream>
+#include<vector>
 using namespace std;
-using i64 = long long;
-using u64 = unsigned long long;
-using i128 = __int128;
-using ld = long double;
-typedef pair<int, int> pii;
-typedef tuple<int, int, int> piii;
-typedef pair<i64, i64> pll;
-typedef pair<i128, i128> pllll;
-mt19937 rnd(time(0));
-template <typename T1, typename T2>
-ostream &operator<<(ostream &os, const pair<T1, T2> &p) // PII 
-{
-    return os << "(" << p.first << ", " << p.second << ")\n";
-}
-template <typename T>
-ostream &operator<<(ostream &os, const vector<T> &v) //vector
-{
-    os << "[";
-    for (int i = 0; i < v.size(); ++i)
-    {
-        if (i)
-            os << ", ";
-        os << v[i];
+
+const int N = 300010;
+vector<int>edge[N];
+int n,m;
+int ans[N];
+
+void dfs(int u) {
+    for (int v : edge[u]) {
+        if (ans[v] != -1)continue;
+        ans[v] = ans[u] + 1;
+        dfs(v);
     }
-    return os << "]\n";
-}
-template <typename T>
-ostream &operator<<(ostream &os, const deque<T> &d) //deque
-{
-    os << "[";
-    for (int i = 0; i < d.size(); ++i)
-    {
-        if (i)
-            os << ", ";
-        os << d[i];
-    }
-    return os << "]\n";
-}
-template <typename T>
-ostream &operator<<(ostream &os, const set<T> &v) //set
-{
-    os << "[";
-    for (auto x = v.begin(); x != v.end(); x++)
-    {
-        if (x != v.begin())
-            os << ", ";
-        os << *x;
-    }
-    return os << "]\n";
-}
-template <typename T1, typename T2>
-ostream &operator<<(ostream &os, const map<T1, T2> &v) //map
-{
-    os << " {";
-    for (auto it = v.begin(); it != v.end(); it++)
-    {
-        if (it != v.begin())
-            os << ", ";
-        os << "(" << it->first << " -> " << it->second << ")"; //键值对
-    }
-    return os << "}\n";
 }
 
-template<class T>
-void chmax(T &a, T b) 
-{
-    if (a < b) 
-        a = b;
-}
-template<class T>
-void chmin(T &a, T b) 
-{
-    if (a > b) 
-        a = b;
-}
-constexpr int MOD = 9, INF = 1e9;
-
-void solve()
-{
-    vector<i64> a = {4, 3, 2, 1};
-    next_permutation(a.begin(), a.end());
-    debugarr(a)
+void solve() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; ++i)edge[i].clear();
+    for (int i = 1; i <= n; ++i) {
+        ans[i] = -1;
+    }
+    for (int i = 1; i <= m; ++i) {
+        int a, b;
+        cin >> a >> b;
+        edge[a].push_back(b);
+        edge[b].push_back(a);
+    }
+    ans[1] = 0;
+    dfs(1);
+    for (int i = 1; i <= n; ++i)cout << ans[i] << " ";
+    puts("");
 }
 
-signed lyc_fan_club()
-{
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    int T = 1;  
-    // cin >> T;
-    while(T--)
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
         solve();
+    }
     return 0;
-}   
+}

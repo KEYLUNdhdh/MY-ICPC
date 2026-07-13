@@ -5,7 +5,7 @@ using i64 = long long;
 struct Trie
 {
     // ch 存储每个节点的子节点编号，这里包含大小写字母加上数字
-    vector<array<int, 70>> ch;
+    vector<array<int, 62>> ch;
     // cnt 记录以当前节点为【结尾】的单词数量
     vector<int> cnt;
     // pre 记录经过当前节点的单词数量（即以此为【前缀】的数量）
@@ -32,7 +32,8 @@ struct Trie
             return c - 'A' + 26;
         else if(c >= '0' && c <= '9')
             return c - '0' + 52;
-        return 69;// 如果是未定义字符，直接传到最末端兜底。
+        assert(false);
+        return -1;// 如果是未定义字符，直接报错.
 
     }
     void insert(const string& s)

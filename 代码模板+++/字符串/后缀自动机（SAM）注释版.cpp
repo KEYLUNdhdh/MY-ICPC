@@ -4,11 +4,15 @@ using i64 = long long;
 
 struct SAM
 {
+    static constexpr int SIGMA = 70; // depends on the problem
+
     struct Node
     {
         int len;// 状态表示的最长子串长度
         int link;// Suffix Link (Parent 树指针)
-        int next[70];// 转移边
+        int next[SIGMA];// 转移边
+
+        // 因为这个节点代表的所有字串endpos一致，所以出现次数应该也相同
         i64 siz;// endpos 集合大小（即子串出现次数）
     };
 
@@ -35,12 +39,15 @@ struct SAM
             return c - 'A' + 26;
         else if(c >= '0' && c <= '9')
             return c - '0' + 52;
-        return 69;
+        assert(false);
+        return -1;
     }
 
     // 插入字符并维护 SAM 的性质
     void extend(char c)
     {
+        assert(!sizComputed);// 第一次统计出现次数后禁止继续扩展
+
         int idx = getId(c);
         int cur = ++sz;
         t[cur].len = t[last].len + 1;
@@ -110,6 +117,7 @@ struct SAM
         for (int i = 1; i <= sz;i++)
             c[t[i].len]++;
         // 2. 求前缀和，算出每种 len 在 rk 数组中占据的最高排名位置
+        // 有点计数排序的感觉
         for (int i = 1; i <= sz;i++)
             c[i] += c[i - 1];
         // 3. 把每个节点放到它对应的排名位置上
@@ -117,6 +125,7 @@ struct SAM
             rk[c[t[i].len]--] = i;
 
         // 拓扑序逆序累加   
+        // 为什么是拓扑序？因为包含 len 更大的节点一般在图的最底部，也就是出度为 0，所以为逆序拓扑序
         for (int i = sz; i >= 2;i--)
         {
             int u = rk[i];// 按 len 从大到小取出节点编号
@@ -129,6 +138,9 @@ struct SAM
     // 2. 查询子串出现次数（全自动档）
     i64 count(const string &query)
     {
+        if(query.empty())
+            return 0;
+            
         comSiz();// 🌟 查询前自动拦截，如果没算过就帮你算，算过就瞬间放行
 
         int p = 1;

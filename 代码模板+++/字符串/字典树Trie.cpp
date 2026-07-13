@@ -4,7 +4,7 @@ using i64 = long long;
 
 struct Trie
 {
-    vector<array<int, 70>> ch;
+    vector<array<int, 62>> ch;
     vector<int> cnt;
     vector<int> pre;
 
@@ -28,8 +28,8 @@ struct Trie
             return c - 'A' + 26;
         else if(c >= '0' && c <= '9')
             return c - '0' + 52;
-        return 69;
-
+        assert(false);
+        return -1;
     }
     void insert(const string& s)
     {
