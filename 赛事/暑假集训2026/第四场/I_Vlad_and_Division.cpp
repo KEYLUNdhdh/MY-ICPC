@@ -33,32 +33,44 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
+bool ST;
+
 constexpr i64 MOD = 998244353, INF = 1e9;
-
-
-i64 qpow(i64 a, i64 b)
-{
-    i64 res = 1;
-    while(b)
-    {
-        if(b & 1)
-            res = res * a % MOD;
-        a = a * a % MOD;
-        b >>= 1;
-    }
-    return res;
-}
 
 void solve()
 {
-    i64 n, m, r, c;
-    cin >> n >> m >> r >> c;
+    int n;
+    cin >> n;
+    int lb = (n + 1) / 2;
+    map<i64, int> mp;
+    vector<i64> a(n + 1, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> a[i], mp[a[i]]++;
 
-    i64 up = (r * c - 1) % (MOD - 1) + (n - r) * (c - 1) % (MOD - 1) + (m - c) * (r - 1) % (MOD - 1);
-    up = (up + MOD - 1) % (MOD - 1);
-    cout << qpow(2, up) << "\n";
+    i64 tmp = (1ll << 31) - 1;
+    int mask = tmp;
+    int ans = 0;
+    for(auto &[val, cnt] : mp)
+    {
+        if(cnt == 0)
+            continue;
+        int t = val ^ mask;
+        if(mp.find(t) == mp.end())
+        {
+            ans += cnt;
+            cnt = 0;
+        }
+        else
+        {
+            int ava = min(mp[t], cnt);
+            mp[t] -= ava;
+            ans += cnt;
+        }
+    }
+    cout << ans << "\n";
 }
 
+bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
@@ -67,6 +79,7 @@ signed lyc_fan_club()
     cin >> T;
     while(T--)
         solve();
-
+    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
+    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
     return 0;
 }

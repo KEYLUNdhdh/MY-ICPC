@@ -1,0 +1,1 @@
+{"name":"Local: R","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假前集训\\2026\\字符串\\R. 姓氏前缀查询.cpp","tests":[{"id":1784455532436,"input":"5 3\nA 0\nB 1\nA 1\nC 2\nA 4\nA\nB\nAB\n","output":"3\n1\n0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假前集训\\2026\\字符串\\R. 姓氏前缀查询.cpp","group":"local","local":true}

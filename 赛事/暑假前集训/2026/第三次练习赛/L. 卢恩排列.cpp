@@ -33,6 +33,7 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
+bool ST;
 constexpr i64 MOD = 998244353, INF = 1e9;
 const int G = 3;
 
@@ -488,6 +489,5 @@ signed lyc_fan_club()
     // cin >> T;
     while(T--)
         solve();
-
     return 0;
 }

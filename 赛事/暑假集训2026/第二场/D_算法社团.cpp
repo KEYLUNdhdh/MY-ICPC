@@ -40,33 +40,7 @@ void solve()
     int n, m;
     cin >> n >> m;
 
-    vector<vector<int>> adj(n + 1);
-    for (int i = 0; i < m;i++)
-    {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    vector<int> a(n + 1, -1);
-    a[1] = 0;
-    auto dfs = [&](auto self, int u, int p) -> void
-    {
-        if(u != 1)
-            a[u] = a[p] + 1;
-        for(int v : adj[u])
-        {
-            if(v == p || a[v] != -1)
-                continue;
-            self(self , v, u);
-        }
-    };
-
-    dfs(dfs, 1, 0);
-    for (int i = 1; i <= n;i++)
-        cout << a[i] << " ";
-    cout << "\n";
+    
 }
 
 signed lyc_fan_club()

@@ -33,35 +33,52 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
+bool ST;
+
 constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-    i64 k;
-    cin >> k;
-    i64 cur = k;
-    while(1)
+    int n;
+    cin >> n;
+    vector<int> a(n + 1, 0), b(n + 1, 0);
+    map<int, int> mp;
+    for (int i = 1; i <= n;i++)
+        cin >> a[i], mp[a[i]] = i, a[i] = i;
+    for (int i = 1; i <= n;i++)
+        cin >> b[i], b[i] = mp[b[i]];
+
+    // debugarr(a) debugarr(b) 
+    // int cnt = 0;
+    // for (int i = 1; i <= n;i++)
+    // {
+    //     if(b[i] > i)
+    //         cnt++;
+    // }
+    // cout << cnt << "\n";
+    if(is_sorted(b.begin(), b.end()))
     {
-        string s = to_string(cur);
-        int cnt = 0;
-        for (int i = 0; i < s.size();i++)
-        {
-            if(s[i] == '0')
-            {
-                cnt++;
-                if(cnt >= 2)
-                {
-                    cout << s << "\n";
-                    return;
-                }
-            }
-            else
-                cnt = 0;
-        }
-        cur += k;
+        cout << 0 << "\n";
+        return;
     }
+
+    int pos = n + 1;
+    for (int i = n; i >= 1;i--)
+    {
+        if(b[i] >= b[i - 1])
+            continue;
+        else
+        {
+            pos = i;
+            break;
+        }
+    }
+    // debug(pos)
+    i64 ans = n - (n - pos + 1);
+    cout << ans << "\n";
 }
 
+bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
@@ -70,6 +87,7 @@ signed lyc_fan_club()
     cin >> T;
     while(T--)
         solve();
-
+    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
+    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
     return 0;
 }

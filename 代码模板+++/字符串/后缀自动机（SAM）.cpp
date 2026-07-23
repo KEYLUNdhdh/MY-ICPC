@@ -84,7 +84,7 @@ struct SAM
         last = cur;
     }
 
-    bool isSubstirng(const string & query)
+    bool isSubstring(const string & query) const
     {
         int p = 1;
         for (char c : query)
@@ -124,7 +124,7 @@ struct SAM
     {
         if(query.empty())
             return 0;
-            
+
         comSiz();
         int p = 1;
         for(char c : query)
@@ -136,5 +136,137 @@ struct SAM
         }
 
         return t[p].siz;
+    }
+
+    i64 distinctSubstringCount() const
+    {
+        i64 ans = 0;
+        for(int u = 2; u <= sz; u++)
+            ans += t[u].len - t[t[u].link].len;
+        return ans;
+    }
+
+    i64 distinctSubstringLengthSum() const
+    {
+        i64 ans = 0;
+
+        for(int u = 2; u <= sz; u++)
+        {
+            i64 l = t[t[u].link].len + 1;
+            i64 r = t[u].len;   
+            ans += (l + r) * (r - l + 1) / 2;
+        }
+
+        return ans;
+    }
+
+    int LCS(const string &s) const
+    {
+        int p = 1;
+        int len = 0;
+        int ans = 0;
+
+        for(char c : s)
+        {
+            int x = getId(c);
+
+            while(p != 1 && !t[p].next[x])
+            {
+                p = t[p].link;
+                len = t[p].len;
+            }
+
+            if(t[p].next[x])
+            {
+                p = t[p].next[x];
+                len++;
+            }
+            else
+            {
+                p = 1;
+                len = 0;
+            }
+
+            ans = max(ans, len);
+        }
+        return ans;
+    }
+
+    int multiLCS(const vector<string> &strs) const
+    {
+        if(strs.empty())
+            return 0;
+
+        int maxlen = 0;
+        for (int i = 1; i <= sz; i++)
+            maxlen = max(maxlen, t[i].len);
+
+        vector<int> c(maxlen + 1, 0);
+        vector<int> rk(sz + 1, 0);
+
+        for (int i = 1; i <= sz; i++)
+            c[t[i].len]++;
+
+        for (int i = 1; i <= maxlen; i++)
+            c[i] += c[i - 1];
+
+        for (int i = sz; i >= 1; i--)
+            rk[c[t[i].len]--] = i;
+
+        vector<int> common(sz + 1);
+
+        for (int i = 1; i <= sz; i++)
+            common[i] = t[i].len;
+
+        vector<int> best(sz + 1);
+
+        for (int id = 0; id < (int)strs.size(); id++)
+        {
+            const string &s = strs[id];
+
+            int p = 1;
+            fill(best.begin(), best.end(), 0);
+            int curlen = 0;
+
+            for(char ch : s)
+            {
+                int idx = getId(ch);
+
+                while(p != 1 && !t[p].next[idx])
+                {
+                    p = t[p].link;
+                    curlen = min(curlen, t[p].len);
+                }
+
+                if(t[p].next[idx])
+                {
+                    p = t[p].next[idx];
+                    curlen++;
+                }
+                else
+                {
+                    p = 1;
+                    curlen = 0;
+                }
+
+                best[p] = max(best[p], curlen);
+            }
+
+            for (int i = sz; i >= 2; i--)
+            {
+                int u = rk[i];
+                int fa = t[u].link;
+
+                best[fa] = max(best[fa], min(best[u], t[fa].len));
+            }
+
+            for (int i = 2; i <= sz; i++)
+                common[i] = min(common[i], best[i]);
+        }
+        int ans = 0;
+        for (int i = 2; i <= sz; i++)
+            ans = max(ans, common[i]);
+
+        return ans;
     }
 };

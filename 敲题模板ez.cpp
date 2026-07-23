@@ -33,13 +33,15 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
-constexpr i64 MOD = 998244353, INF = 1e9;
+bool ST;
 
+constexpr i64 MOD = 998244353, INF = 1e9;
 void solve()
 {
-    
+
 }
 
+bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
@@ -48,6 +50,7 @@ signed lyc_fan_club()
     cin >> T;
     while(T--)
         solve();
-
+    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
+    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
     return 0;
 }

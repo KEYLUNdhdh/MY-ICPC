@@ -108,4 +108,5 @@ struct SuffixArray
                 k--;
         }
     }
+
 };

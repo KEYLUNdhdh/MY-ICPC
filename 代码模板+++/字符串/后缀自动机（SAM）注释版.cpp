@@ -92,7 +92,7 @@ struct SAM
 
     ///
     //  1. 判断子串是否存在（不需要 siz，直接跑）
-    bool isSubstirng(const string & query)
+    bool isSubstring(const string & query)
     {
         int p = 1;// 从根节点（空串）开始走
         for (char c : query)
@@ -140,7 +140,7 @@ struct SAM
     {
         if(query.empty())
             return 0;
-            
+
         comSiz();// 🌟 查询前自动拦截，如果没算过就帮你算，算过就瞬间放行
 
         int p = 1;
@@ -153,5 +153,164 @@ struct SAM
         }
 
         return t[p].siz;// 此时返回的绝对是真实准确的出现次数！
+    }
+
+    // 查询原字符串中不同子串的总数
+    i64 distinctSubstringCount() const
+    {
+        i64 ans = 0;
+        // 每个 u 都增加这么多
+        for(int u = 2; u <= sz; u++)
+            ans += t[u].len - t[t[u].link].len;
+        return ans;
+    }
+
+    // 查询本质不同子串长度总和
+    i64 distinctSubstringLengthSum() const
+    {
+        i64 ans = 0;
+
+        for(int u = 2; u <= sz; u++)
+        {
+            i64 l = t[t[u].link].len + 1;
+            i64 r = t[u].len;
+            ans += (l + r) * (r - l + 1) / 2;
+        }
+
+        return ans;
+    }
+
+    // 查询与另一个字符串的最长公共子串的长度
+    int LCS(const string &s) const
+    {
+        int p = 1;// 当前匹配字符串在 SAM 中所处的状态，也就是当前位于t[p]
+        int len = 0;// 当前实际匹配字符串的实际长度。
+        int ans = 0;
+
+        for(char c : s)
+        {
+            int x = getId(c);
+
+            // 当前字符不能直接接上，我们就往回跳，尝试更短的后缀
+            while(p != 1 && !t[p].next[x])
+            {
+                p = t[p].link;
+                len = t[p].len;// 拿到这个endpos等价类里面最长的那个字符串
+            }
+
+            // 当前字符可以直接接上
+            if(t[p].next[x])
+            {
+                p = t[p].next[x];// 往下跳
+                len++;// 长度加一
+            }
+            else// 如果我们while循环干到了根节点，说明得从零开始匹配了
+            {
+                p = 1;
+                len = 0;
+            }
+            //每加入一个字符都得更新下答案。
+            ans = max(ans, len);
+        }
+        return ans;
+    }
+
+    // 当前 SAM 应当由 strs 中的一个基准字符串构建。
+    // 求该基准字符串与 strs 中所有字符串的最长公共子串。
+    // skip 表示跳过 strs[skip]，通常它就是构建 SAM 的最短字符串。
+    int multiLCS(const vector<string> &strs) const
+    {
+        if(strs.empty())
+            return 0;
+
+        // rk：所有 SAM 状态按 len 从小到大排序。
+        int maxlen = 0;
+        for (int i = 1; i <= sz; i++)
+            maxlen = max(maxlen, t[i].len);
+
+        vector<int> c(maxlen + 1, 0);
+        vector<int> rk(sz + 1, 0);
+
+        for (int i = 1; i <= sz; i++)
+            c[t[i].len]++;
+
+        for (int i = 1; i <= maxlen; i++)
+            c[i] += c[i - 1];
+
+        for (int i = sz; i >= 1; i--)
+            rk[c[t[i].len]--] = i;
+
+        // common[u]：
+        // 到目前为止，所有已处理字符串在状态 u 上
+        // 共同能够匹配的最大长度。
+        // 构建 SAM 的基准字符串对状态 u 天然可以匹配 len[u]。
+        vector<int> common(sz + 1);
+
+        for (int i = 1; i <= sz; i++)
+            common[i] = t[i].len;
+
+        // best[u]：当前字符串在状态 u 上能够匹配的最大长度。
+        vector<int> best(sz + 1);
+
+        for (int id = 0; id < (int)strs.size(); id++)
+        {
+            const string &s = strs[id];
+
+            fill(best.begin(), best.end(), 0);
+
+            int p = 1;
+            int curlen = 0;
+
+            // * 在当前 SAM 上匹配字符串 s。
+            for(char ch : s)
+            {
+                int idx = getId(ch);
+
+                while(p != 1 && !t[p].next[idx])
+                {
+                    p = t[p].link;
+                    curlen = min(curlen, t[p].len);
+                }
+
+                if(t[p].next[idx])
+                {
+                    p = t[p].next[idx];
+                    curlen++;
+                }
+                else
+                {
+                    p = 1;
+                    curlen = 0;
+                }
+
+                best[p] = max(best[p], curlen);
+            }
+
+            // 按照 len 从大到小，沿 suffix link 传播。
+            // 如果状态 u 匹配了 best[u]，
+            // 那么 fa = link[u] 至少可以匹配：min(best[u], len[fa])
+            for (int i = sz; i >= 2; i--)
+            {
+                int u = rk[i];
+                int fa = t[u].link;
+
+                best[fa] = max(
+                    best[fa],
+                    min(best[u], t[fa].len)
+                );
+            }
+
+            // 公共子串要求出现在每个字符串中，
+            // 因此对每个状态取最小值。
+            for (int i = 2; i <= sz; i++)
+                common[i] = min(common[i], best[i]);
+        }
+
+        int ans = 0;
+
+        for (int i = 2; i <= sz; i++)
+            ans = max(ans, common[i]);
+
+        return ans;
     }
 };

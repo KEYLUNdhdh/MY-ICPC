@@ -2,7 +2,7 @@
 using namespace std;
 using i64 = long long;
 using ld = long double;
-
+typedef pair<int, int> pii;
 constexpr ld eps = 1e-12;
 constexpr ld PI=3.1415926535897932384l;
 
@@ -249,6 +249,50 @@ using Polygon = polygon<point_t>;
 template<typename T> 
 struct convex : polygon<T>
 {
+    // 闵可夫斯基和
+    convex operator+(const convex &c) const
+    {
+        //  e1 和 e2 用来装 A和 B 的边。edge 用来装合并后的边。cmp 是一个比较函数，用于比较两条有向线段向量的“极角”。
+        const vector<point<T>> &p = this->p;
+        vector<Segment> e1(p.size()), e2(c.p.size()), edge(p.size() + c.p.size());
+        vector<point<T>> res;
+        res.reserve(p.size() + c.p.size());
+
+        // Polar::cmp 一般是一个基于叉积计算极角的函数。把线段看作向量（终点减起点 u.b - u.a），谁指向的角度更小（比如都在第一象限，角度越贴近 X 轴正半轴越小），谁就排前面。
+        const auto cmp = [](const Segment &u, const Segment &v) -> bool
+        {
+            return Polar::cmp(u.b - u.a, v.b - v.a);
+        };
+
+        // 提取： 把顶点组装成了向量边。
+        for (int i = 0; i < p.size();i++)
+            e1[i] = {p[i], p[this->nxt(i)]};
+        for (int i = 0; i < c.p.size();i++)
+            e2[i] = {c.p[i], c.p[c.nxt(i)]};
+
+        rotate(e1.begin(), min_element(e1.begin(), e1.end(), cmp), e1.end());
+        rotate(e2.begin(), min_element(e2.begin(), e2.end(), cmp), e2.end());
+        merge(e1.begin(), e1.end(), e2.begin(), e2.end(), edge.begin(), cmp);
+        
+        const auto check = [](const vector<point<T>> &res, const point<T> &u) -> bool
+        {
+            const auto back1 = res.back(), back2 = *prev(res.end(), 2);
+            return (back1 - back2).toleft(u - back1) == 0 && (back1 - back2) * (u - back1) >= -eps;
+        };
+
+        auto u = e1[0].a + e2[0].a;
+        for(const auto &v : edge)
+        {
+            while(res.size() > 1 && check(res, u))
+                res.pop_back();
+            res.push_back(u);
+            u = u + v.b - v.a;
+        }
+        if(res.size() > 1 && check(res, res[0]))
+            res.pop_back();
+        return {res};
+    }
+
     // 旋转卡壳
     // 遍历凸包的每一条边，并找到距离这条边最远的顶点。
     // func 为更新答案的函数，可以根据题目调整注入的函数 [&]
@@ -309,16 +353,23 @@ struct convex : polygon<T>
 
     // 判断点是否在凸多边形内
     // 复杂度 O(logn)
-    // -1 点在多边形边上 | 0 点在多边形外 | 1 点在多边形内
+    // -2 点在多边形端点上 | -1 点在多边形边上 | 0 点在多边形外 | 1 点在多边形内
     int is_in(const point<T> &a) const
     {
         const auto &p = this->p;
+        // 如果没点
+        if(p.size() == 0)
+            return 0;
         if(p.size() == 1) // 只有一个点
-            return a == p[0] ? -1 : 0;
+            return a == p[0] ? -2 : 0;
         if(p.size() == 2) // 只有两个点（一条线段）
-            return segment<T>{p[0], p[1]}.is_on(a) ? -1 : 0;
+        {
+            if(a == p[0]  || a == p[1])
+                return -2;
+            return segment<T>{p[0], p[1]}.is_on(a) == 1 ? -1 : 0;
+        }
         if(a == p[0]) // 点恰好和基准点（通常是左下角点）重合
-            return -1;
+            return -2;
 
         // 如果目标点 a 跑到了最右侧光线 p[0]->p[1] 的右边，或者跑到了最左侧光线 p[0]->p.back() 的左边，那它绝对不可能在多边形内部，直接返回 0。
         if((p[1] - p[0]).toleft(a - p[0]) == -1 || (p.back() - p[0]).toleft(a - p[0]) == 1)
@@ -339,18 +390,247 @@ struct convex : polygon<T>
         // 返回 false：点 a 在射线 p[0] -> u 的右侧或共线上（极角小于等于 u）。
         const int i = lower_bound(p.begin() + 1, p.end(), a, cmp) - p.begin();
 
+        if(a == p[i] || a == p[this->pre(i)])
+            return -2;
         // 1. 如果锁定的边界是第一条边，判断是否落在这条边上
         if(i == 1)
-            return segment<T>{p[0], p[i]}.is_on(a) ? -1 : 0;
+            return segment<T>{p[0], p[i]}.is_on(a) == 1 ? -1 : 0;
         // 2. 如果锁定的边界是最后一条边，且刚好落在这条边上
-        if(i == p.size() - 1 && segment<T>{p[0], p[i]}.is_on(a))
+        if(i == p.size() - 1 && segment<T>{p[0], p[i]}.is_on(a) == 1)
             return -1;
         // 3. 判断是否落在多边形外围的那条“封口边”上
-        if(segment<T>{p[i - 1], p[i]}.is_on(a))
+        if(segment<T>{p[i - 1], p[i]}.is_on(a) == 1)
             return -1;
 
         // 4. 终极判断：在三角形内部吗？
         return (p[i] - p[i - 1]).toleft(a - p[i - 1]) > 0;
+    }
+
+    // 凸包与直线的关系判断
+    // 0: 无交
+    // -1: 只接触边界
+    // 1: 穿过内部
+    // n > 2 时复杂度 O(log n)
+    int relation(const line<T> &l) const
+    {
+        const auto &p = this->p;
+        const int n = p.size();
+
+        if(n == 0)
+            return 0;
+
+        // 退化凸包直接枚举
+        if(n <= 2)
+        {
+            int pos = 0, neg = 0, on = 0;
+            for(auto &u : p)
+            {
+                const int s = l.toleft(u);
+                pos |= s > 0;// 有点在左边
+                neg |= s < 0;// 有点在右边
+                on |= s == 0;// 有点在直线上
+            }
+
+            if(pos && neg)// 一左一右穿过内部
+                return 1;
+            if(on)
+                return -1;
+            return 0;
+        }
+
+        const auto [i, j] = tangent(l);
+        // 找到两条平行于 l 的凸包切线的切点下标，我们做toleft测试即可
+        const int si = l.toleft(p[i]);
+        const int sj = l.toleft(p[j]);
+
+        if(si * sj < 0)
+            return 1;
+        if(si == 0 || sj == 0)
+            return -1;
+        return 0;
+    }
+
+    // 0：线段与凸包无交
+    // -1：线段只接触凸包边界，不进入内部
+    // 1：线段与凸包内部相交
+    //
+    // 要求：
+    // 1. 凸包顶点按照边界循环排列；
+    // 2. 凸包严格凸；
+    // 3. 当前实现用于 T = long double；
+    // 4. 时间复杂度 O(log n)。
+    int relation(const segment<T> &s) const
+    {
+        const auto &p = this->p;
+        const int n = p.size();
+
+        if(n == 0)
+            return 0;
+        
+        // 凸包退化成一个点
+        if(n == 1)
+            return s.is_on(p[0]) ? -1 : 0;
+
+         // 凸包退化成一条线段，不存在二维内部
+        if(n == 2)
+            return s.is_inter(segment<T>{p[0], p[1]}) ? -1 : 0;
+
+        // 查询线段退化成一个点
+        if(s.a == s.b)
+            return is_in(s.a);
+
+        // 先判断无限直线与凸包的关系
+        const line<T> l{s.a, s.b - s.a};
+        const int lineRelation = relation(l);
+
+        // 无限直线都不与凸包相交,那线段也不会相交。
+        if(lineRelation == 0)
+            return 0;
+
+        // 无限直线只与凸包边界接触。
+        // 接触部分可能是：
+        // 1. 一个顶点；
+        // 2. 一条完整的凸包边。
+        // 还要判断这个接触位置是否在线段 s 上。
+        // -1 时，只碰到了边界
+        if(lineRelation == -1)
+        {
+            // 拿出两个极点
+            // 求平行于给定直线的凸多边形的切线，返回切点下标
+            const auto [i, j] = tangent(l);
+
+            // touch用来判断我们的 u 是否和 l 有接触
+            const auto touch = [&](const int u) -> bool
+            {
+                // u 不是直线与凸包的接触点
+                if(l.toleft(p[u]) != 0)
+                    return false;
+
+                // u 在线段上，显然有接触
+                if(s.is_on(p[u]))
+                    return true;
+
+                // 拿到 u 的前驱后继
+                const int prev = this->pre(u);
+                const int nxt = this->nxt(u);
+
+                // 查询线段可能与前一条边重合
+                if (l.toleft(p[prev]) == 0)
+                {
+                    const segment<T> edge{p[prev], p[u]};
+                    if(s.is_inter(edge))
+                        return true;
+                }
+
+                // 查询线段可能与后一条边重合
+                if (l.toleft(p[nxt]) == 0)
+                {
+                    const segment<T> edge{p[u], p[nxt]};
+                    if(s.is_inter(edge))
+                        return true;
+                }
+                // 否则都不重合
+                return false;
+            };
+
+            // 如果有碰到任何一个极点，那么边界接触成立，返回 -1，否则返回 0
+            return touch(i) || touch(j) ? -1 : 0;
+        }
+
+        // 下面 lineRelation == 1：
+        // 无限直线严格穿过凸包内部。
+        // 找到凸包在直线两侧的两个极点。
+        auto [mx, mn] = tangent(l);
+
+        // 保证 mx 在直线左侧，mn 在直线右侧
+        if(l.toleft(p[mx]) < l.toleft(p[mn]))
+            swap(mx, mn);
+
+        // 此时一定有：
+        // l.toleft(p[mx]) == 1
+        // l.toleft(p[mn]) == -1
+
+        // 从 start 方向出发，沿着 step 方向移动 k 步
+        // 这里传入的 step 为 -1 或 1
+        // 返回下标
+        const auto indexAt = [&](const int start, const int step, const int k)
+        {
+            int index = (start + 1ll * step * k) % n;
+            if(index < 0)
+                index += n;
+            return index;
+        };
+
+        // 从 mx 沿一条凸包边界链走到 mn。
+        // 点相对于直线的位置会从正逐渐变为负(toleft 测试)
+        // 二分找到最后一个正点和第一个非正点，
+        // 它们之间的边就是直线穿过的边。
+        const auto findCrossingEdge = [&](const int step) -> pii
+        {
+            int len;
+
+            // step为1，顺时针走，从mx走到mn，我们算出步长给 len
+            if(step == 1)
+                len = (mn - mx + n) % n;
+            else
+                len = (mx - mn + n) % n;
+
+            // 为什么要求len？因为要找二分的上下界
+            int lo = 0;
+            int hi = len;
+            while(lo + 1 < hi)
+            {
+                int m = lo + hi >> 1;
+                int id = indexAt(mx, step, m);
+
+                if(l.toleft(p[id]) > 0)
+                    lo = m;
+                else
+                    hi = m;
+            }
+            return pii{indexAt(mx, step, lo), indexAt(mx, step, hi)};
+        };
+
+        // 凸包有两条从 mx 到 mn 的边界链，
+        // 每条链产生一个直线与凸包边界的交点。
+        // 这里 u1, v1 与 u2,v2 确定的线段和直线有交。
+        const auto [u1, v1] = findCrossingEdge(1);
+        const auto [u2, v2] = findCrossingEdge(-1);
+
+        // 查询直线参数方程：
+        // P(t) = s.a + t(s.b - s.a)
+        // 凸包边：
+        // Q(k) = p[u] + k(p[v] - p[u])
+        // 两条直线交点参数：
+        // t = cross(p[u] - s.a, p[v] - p[u]) / cross(s.b - s.a, p[v] - p[u])
+        // 这里的 t 就是 p(t) 那里的 t
+        const auto intersec = [&](const int u, const int v) -> ld
+        {
+            const point<T> edge = p[v] - p[u];
+            const point<T> dir = s.b - s.a;
+            const ld num = static_cast<ld>((p[u] - s.a) ^ edge);
+            const ld den = static_cast<ld>(dir ^ edge);
+            return num / den;
+        };
+
+        ld t1 = intersec(u1, v1);
+        ld t2 = intersec(u2, v2);
+        if(t1 > t2)
+            swap(t1, t2);
+
+        // 凸包内部对应查询直线上的开区间：(t1, t2)
+        // 查询线段对应闭区间：[0, 1]
+        const ld left = max<ld>(0, t1);
+        const ld right = min<ld>(1, t2);
+
+        // 有一段正长度区间落在凸包内部
+        if(left < right - eps)
+            return 1;
+
+        // 只有一个公共点，即仅接触边界
+        if(left <= right + eps)
+            return -1;
+        return 0;
     }
 
     // 凸多边形的直径的平方
@@ -368,6 +648,64 @@ struct convex : polygon<T>
         };
         rotcaliper(func);
         return ans;
+    }
+
+    // 凸多边形关于某一方向的极点
+    // 复杂度 O(logn)
+    // 参考资料：https://codeforces.com/blog/entry/48868
+    template<typename F>
+    int extreme(const F &dir) const
+    {
+        const auto &p = this->p;
+        // 考察每条边相对于目标方向的相对位置
+        const auto check = [&](const int i)
+        {
+            return dir(p[i]).toleft(p[this->nxt(i)] - p[i]) >= 0;
+        };
+
+        const auto dir0 = dir(p[0]);;
+        const auto check0 = check(0);
+
+        if(!check0 && check(p.size() - 1))
+            return 0;
+
+        const auto cmp = [&](const point<T> &v)
+        {
+            const int vi = &v - p.data();// 1. 利用指针减法，O(1) 算出当前点 v 的下标 vi
+            if(vi == 0)
+                return 1;
+            const auto checkv = check(vi);
+            const auto t = dir0.toleft(v - p[0]);// 2. 划定半平面
+            if(vi == 1 && checkv == check0 && t == 0)// 3. 消除共线干扰
+                return 1;
+            // 异或逻辑
+            return checkv ^ (checkv == check0 && t <= 0);
+        };
+        return partition_point(p.begin(), p.end(), cmp) - p.begin();
+    }
+
+    // promise that a is not "on" or "inside" the convex
+    // 过凸多边形外一点求凸多边形的切线，返回切点下标
+    // 复杂度 O(logn)
+    // 必须保证点在多边形外
+    pii tangent(const point<T> &a) const 
+    {
+        // 求外部点 a 到凸多边形的两个切点
+        // 左切点：看以 u-a (从 a 看向 u) 为基准，边向哪转
+        const int i = extreme([&](const point<T> &u){return u - a;});
+        // 右切点：反转视线
+        const int j = extreme([&](const point<T> &u){return a - u;});
+        return {i, j};
+    }
+
+    // 求平行于给定直线的凸多边形的切线，返回切点下标
+    // 复杂度 O(logn)
+    pii tangent(const line<T> &a) const 
+    {
+        // 给定一条直线，求凸多边形在平行于该直线的方向上的最远最近极点
+        const int i = extreme([&](const auto &){return a.v;});
+        const int j = extreme([&](const auto &){return -a.v;});
+        return {i, j};
     }
 };
 
@@ -420,6 +758,124 @@ Convex convexhull(vector<Point> p)
     st.pop_back();// 终点（即下凸壳的起点）会被上凸壳再加入一次，需要弹出
     return {st};
 }
+
+// guarantee using i64
+// ********************
+// the x and y have been multiplied by 3 inside the struct
+// ********************
+template<typename T>
+struct dynamicHull
+{
+    // 极角排序结构体
+    struct Cmp
+    {
+        point<T> C;
+        int quad(const point<T> &p) const
+        {
+            point<T> a = p - C;
+            if(a.y < 0) return 1;
+            if(a.y > 0) return 4;
+            if(a.x < 0) return 5;
+            if(a.x > 0) return 3;
+            return 2;
+        }
+
+        bool operator()(const point<T> &a, const point<T> &b) const
+        {
+            int qa = quad(a), qb = quad(b);
+            if(qa != qb)
+                return qa < qb;
+
+            T t = (a - C) ^ (b - C);
+            if(t == 0)
+                return (a - C).len2() < (b - C).len2();
+            else
+                return t > 0;
+        }
+    };
+    set<point<T>, Cmp> s;
+
+    dynamicHull() {}
+
+    // 扩大三倍是为了求重心的时候保证能够整除
+    // 我们以重心为中心，进行极角排序
+    void init(point<T> p1, point<T> p2, point<T> p3)
+    {
+        p1 = p1 * 3, p2 = p2 * 3, p3 = p3 * 3;
+        point<T> C = (p1 + p2 + p3) / 3;
+        s = set<point<T>, Cmp>(Cmp{C});
+        s.insert(p1);
+        s.insert(p2);
+        s.insert(p3);
+    }
+
+    // 找后继
+    auto nxt(typename set<point<T>, Cmp>::iterator it)
+    {
+        auto nx = next(it);
+        return nx == s.end() ? s.begin() : nx;
+    }
+
+    // 找前驱
+    auto pre(typename set<point<T>, Cmp>::iterator it)
+    {
+        return it == s.begin() ? prev(s.end()) : prev(it);
+    }
+
+    // 判断点是否在凸包内
+    bool is_in(point<T> P)
+    {
+        if(s.size() < 3)
+            return false;
+
+        P = P * 3;// 查询点也要乘以3，和内部坐标系保持一致
+        // 找到极角正好大于等于 P 的那个凸包顶点 R
+        auto it = s.lower_bound(P);
+        auto R = (it == s.end() ? s.begin() : it);
+        auto L = pre(R);
+        return ((*R - *L) ^ (P - *L)) >= 0;
+    }
+
+    // 动态加点
+    void add(point<T> P)
+    {
+        if(is_in(P)) // 在凸包内等于没加
+            return;
+
+        P = P * 3;// 对齐坐标
+        auto it = s.insert(P).first;//拿出 P 对应的迭代器
+
+        // 逆时针方向删除多余顶点
+        auto nx = nxt(it);
+        while(s.size() > 3)
+        {
+            auto nnx = nxt(nx);
+            // 判断多边形是不是全程向左拐，不是则删去
+            if(((*nx - *it) ^ (*nnx - *nx)) <= 0)
+            {
+                s.erase(nx);
+                nx = nnx;
+            }
+            else
+                break;
+        }
+
+        auto pv = pre(it);
+        while(s.size() > 3)
+        {
+            auto ppv = pre(pv);
+            if(((*pv - *ppv) ^ (*it - *pv)) <= 0)
+            {
+                s.erase(pv);
+                pv = ppv;
+            }
+            else
+                break;
+        }
+    }
+};
+
+using DynamicHull = dynamicHull<i64>;
 
 // 圆
 struct Circle
@@ -509,6 +965,70 @@ struct Circle
         const ld sinth = sqrtl(max(0.0L, 1.0L - costh * costh)); 
         return vector<Point>{c + e.rot(costh, -sinth), c + e.rot(costh, sinth)};
     }
+
+    // 过圆外一点圆的切线
+    vector<Line> tangent(const Point &a) const
+    {
+        const int t = is_in(a);
+        // 在园内，无切线
+        if(t == 1)
+            return vector<Line>();
+        // 在圆上
+        if(t == -1)
+        {
+            const Point v = {-(a - c).y, (a - c).x};
+            return vector<Line>{{a, v}};
+        }
+        // 在圆外
+        Point e = a - c;
+        e = e / e.len() * r;
+        const ld costh = r / c.dis(a), sinth = sqrtl(1 - costh * costh);
+        const Point t1 = c + e.rot(costh, -sinth), t2 = c + e.rot(costh, sinth);
+        return vector<Line>{{a, t1 - a}, {a, t2 - a}};
+    }
+
+    // 圆的反演
+    // 不过中心的直线，其反演图形一定是一个经过反演中心的圆。
+    tuple<int, Circle, Line> inverse(const Line &l) const 
+    {
+        const Circle nullC = {{0., 0.}, 0.};
+        const Line nullL = {{0., 0.}, {0., 0.}};
+        // 直线经过圆心，反演完还是这条直线
+        if(l.toleft(c) == 0)
+            return {2, nullC, l};
+        // 如果 c 在直线左侧 (toleft == 1)，要从 c 指向直线，就必须取直线方向的右法向量 (y, -x)；反之取左法向量 (-y, x)。这确保了 v 永远是指向直线的最短路方向。
+        const Point v = l.toleft(c) == 1 ? Point{l.v.y, -l.v.x} : Point{-l.v.y, l.v.x};
+        // 设反演中心到直线的距离为 h（即 l.dis(c)）。直线上离中心最近的点，反演后会变成离中心最远的点（即新圆直径的另一端）。
+        // 我们求出这个最远的的点到直线的距离
+        const ld d = r * r / l.dis(c);
+        // p 是圆上距离 c 最远的点。新圆的圆心自然就是 c 和 p 的中点，半径是 d / 2。
+        const Point p = c + v / v.len() * d;
+        return {1, {(c + p) / 2, d / 2}, nullL};
+    }
+
+    tuple<int, Circle, Line> inverse(const Circle &a) const
+    {
+        const Circle nullC = {{0., 0.}, 0.};
+        const Line nullL = {{0., 0.}, {0., 0.}};
+        const Point v = a.c - c;
+        if(a.is_in(c) == -1) // 经过反演中心的圆，必定被反演成一条不经过反演中心的直线。
+        {
+            // 新直线怎么求？它垂直于“反演中心与圆心连线”。
+            // 圆 a 上离反演中心最远的点距离为 2 * ra。它反演后，变成了新直线上离反演中心最近的垂足点 p。 
+            const ld d = r * r / (a.r + a.r);
+            const Point p = c + v / v.len() * d;
+            return {2, nullC, {p, {-v.y, v.x}}};
+        }
+        // 如果是同心圆, 我们把半径缩放即可
+        if(c == a.c)
+            return {1, {c, r * r / a.r}, nullL};
+        // 不过反演中心的圆，反演后还是一个圆，且原圆心、新圆心、反演中心必定三点共线。
+        // 我们需要找新圆的直径：它由原圆上距离反演中心最近和最远的两个点反演而来。
+        // 所以我们求 d1, d2
+        const ld d1 = r * r / (c.dis(a.c) - a.r), d2 = r * r / (c.dis(a.c) + a.r);
+        const Point p = c + v / v.len() * d1, q = c + v / v.len() * d2;
+        return {1, {(p + q) / 2, p.dis(q) / 2}, nullL};
+    }
 };
 
 // 半平面交
@@ -563,5 +1083,3 @@ vector<Line> halfinter(vector<Line> l, const point_t lim = 1e9)
         q.pop_front();
     return vector<Line>(q.begin(), q.end());
 }
-
-

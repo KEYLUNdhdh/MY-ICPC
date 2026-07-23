@@ -12,7 +12,7 @@ struct Trie
     {
         newNode();
     }
-
+    
     int newNode()
     {
         ch.push_back({0});
@@ -101,6 +101,11 @@ struct GSAM
     GSAM()
     {
         clear();
+    }
+
+    GSAM (const Trie &trie)
+    {
+        build(trie);
     }
 
     int getId(char c) const
@@ -194,6 +199,19 @@ struct GSAM
             }
         }
         return cur;
+    }
+
+    void build(const string &s)
+    {
+        clear();
+
+        t.reserve(2 * s.size() + 2);
+
+        int last = 1;
+        for(char ch : s)
+            last = extend(last, getId(ch));
+
+        built = true;
     }
 
     void build(const Trie &trie)
@@ -304,4 +322,40 @@ struct GSAM
             ans += t[i].len - t[t[i].link].len;
         return ans;
     }
+
+    int LCS(const string &s)
+    {
+        assert(built);
+
+        int p = 1;
+        int len = 0;
+        int ans = 0;
+
+        for(char c : s)
+        {
+            int idx = getId(c);
+
+            while(p != 1 && !t[p].next[idx])
+            {
+                p = t[p].link;
+                len = t[p].len;
+            }
+
+            if(t[p].next[idx])
+            {
+                p = t[p].next[idx];
+                len++;
+            }
+            else
+            {
+                p = 1;
+                len = 0;
+            }
+
+            ans = max(ans, len);
+        }
+
+        return ans;
+    }
+
 };

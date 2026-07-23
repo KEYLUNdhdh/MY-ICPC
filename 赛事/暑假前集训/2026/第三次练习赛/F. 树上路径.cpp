@@ -48,8 +48,46 @@ void solve()
     };
 
     int n;
+    cin >> n;
+    vector<int> def;
+    vector<vector<int>> adj(n + 1);
 
-    
+    for (int i = 1; i < n;i++)
+    {
+        int u, v;
+        cin >> u >> v;
+
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    auto dfs = [&](auto self, int u, int p) -> void
+    {
+        def.push_back(u);
+        for (int v : adj[u])
+        {
+            if (v == p)
+                continue;
+
+            self(self, v, u);
+        }
+    };
+
+    dfs(dfs, 1, 0);
+    for (int i = 0; i < n - 1;i += 2)
+    {
+        int f = query(def[i], def[i + 1]);
+        if(f)
+        {
+            if(query(def[i], def[i]))
+                cout << "! " << def[i] << endl;
+            else
+                cout << "! " << def[i + 1] << endl;
+            return;
+        }
+    }
+
+    if(n % 2)
+        cout << "! " << def[n - 1] << endl;
 }
 
 signed lyc_fan_club()

@@ -90,6 +90,7 @@ struct RollbackMo
                 curans = 0;
                 lastblock = curblock;
             }
+            
             // 2. 同块暴力处理
             if(curblock == q.r / blockSize)
             {

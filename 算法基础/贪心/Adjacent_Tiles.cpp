@@ -79,6 +79,7 @@ istream &operator>>(istream &is,i128& n)
     return is;
 }
 
+// 这个贪心想不到啊
 void solve()
 {
     i64 n;

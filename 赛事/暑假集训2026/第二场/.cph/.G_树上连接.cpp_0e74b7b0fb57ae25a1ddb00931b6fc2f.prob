@@ -1,0 +1,1 @@
+{"name":"Local: G_树上连接","url":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假集训2026\\第二场\\G_树上连接.cpp","tests":[{"id":1784632864232,"input":"5 3\n1 3 4 6 7\n1 2\n1 3\n3 4\n3 5\n","output":"0 2 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\KEYLUN\\OneDrive\\vscode\\赛事\\暑假集训2026\\第二场\\G_树上连接.cpp","group":"local","local":true}

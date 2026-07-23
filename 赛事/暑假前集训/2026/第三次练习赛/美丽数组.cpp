@@ -53,7 +53,7 @@ void sieve(int n)
 			if(i % p == 0)
 				break;
 		}
-	}
+	}   
 }
 
 void solve()
@@ -61,13 +61,86 @@ void solve()
     int n, q;
     cin >> n >> q;
 
-    sieve(1e5);
-    
+    // sieve(1e5);
+    // debug(primes.size())
     vector<int> a(n + 1, 0);
+    map<int, vector<int>> mp;
     for (int i = 1; i <= n;i++)
+    {
         cin >> a[i];
+        int num = a[i];
+        if(!mp[a[i]].empty())
+            continue;
+        for (int k = 2; k * k <= num;k++)
+        {
+            if(num % k == 0)
+            {
+                mp[a[i]].push_back(k);
+                while(num % k == 0)
+                    num /= k;
+            }
+        }
+        
+        if(num != 1)
+            mp[a[i]].push_back(num);
+    }
 
-    
+    vector<int> cnt(1e5 + 1, 0);
+    vector<vector<i64>> f(n + 1, vector<i64>(32, 0));
+    int l = 1;
+    for (int r = 1; r <= n;r++)
+    {
+        int num = a[r];
+        for(int k : mp[num])
+        {
+            cnt[k]++;
+            if(cnt[k] >= 2)
+            {
+                while(cnt[k] >= 2)
+                {
+                    for(int j : mp[a[l]])
+                        cnt[j]--;
+                    f[l][0] = r - 1;
+                    l++;
+                }
+            }
+        }
+    }
+
+    while(l <= n)
+    {
+        f[l][0] = n;
+        l++;
+    }
+
+    // debug(l)
+    for (int j = 1; j <= 31;j++)
+        for (int i = 1; i <= n;i++)
+        {
+            // f[i][j] = f[f[i][j - 1] + 1][j - 1];
+            if(f[i][j - 1] == n)
+                f[i][j] = n;
+            else
+                f[i][j] = f[f[i][j - 1] + 1][j - 1];
+        }
+
+    // debug(l)
+    while (q--)
+    {
+        int l, r;
+        cin >> l >> r;
+        i64 ans = 0;
+        int cur = l;
+        for (int i = 31; i >= 0; i--)
+        {
+            if (f[cur][i] < r)
+            {
+                cur = f[cur][i] + 1;
+                ans += pow(2, i);
+            }
+        }
+        cout << ans + 1 << "\n";
+    }   
 }
 
 signed lyc_fan_club()
@@ -75,7 +148,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
 
