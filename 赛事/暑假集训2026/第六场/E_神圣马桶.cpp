@@ -36,32 +36,49 @@ void chmax(T &a, T b)
 bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
 
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
+/*
+我只能说，先注意一下 0 的位置和有多少个 0
+没有 0 好说， 只有一个 0，那就是整个数组
 
+问题是有多个 0 的情况
+我测你木，你妈的我怎么不会啊
+我操了我他妈是菜比啊
+*/
 void solve()
 {
+    int n;
+    cin >> n;
+    vector<int> cnt(n + 2, 0), a(n + 1, 0), pos;
+    for (int i = 1; i <= n;i++)
+    {
+        cin >> a[i], cnt[a[i]]++;
+        if(a[i] == 0)
+            pos.push_back(i);
+    }
 
-    sieve(300);
-    debug(primes.size())
+    if(cnt[0] == 0)
+    {
+        cout << 0 << "\n";
+        return;
+    }
+
+    else if(cnt[0] == 1)
+    {
+        for (int i = 1; i <= n + 1;i++)
+            if(cnt[i] == 0)
+            {
+                cout << i << "\n";
+                return;
+            }
+    }
+
+
+    vector<int> dp(n + 1, 0);
+    for(int k : pos)
+    {
+
+    }
 }
 
 bool ED;
@@ -70,10 +87,10 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    // cin >> T;
+    cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

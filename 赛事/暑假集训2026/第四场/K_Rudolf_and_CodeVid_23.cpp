@@ -37,38 +37,77 @@ bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
 
+struct edge
+{
+    int l, r, w;
+};
+
+const int MAXN = 20005;
+
+inline i64 read(int n)
+{
+    i64 t;
+    cin >> t;
+    i64 res = 0;
+    for (int i = 0; i < n;i++)
+    {
+        if(t % 10)
+            res += pow(2, i);
+        t /= 10;
+    }
+    return res;
+}
+
 void solve()
 {
-    int n;
-    cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
-    vector<i64> a(n + 1, 0);
-    for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
+    int n, m;
+    cin >> n >> m;
 
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
+    i64 s;
+    s = read(n);
+    // debug(s)
+    vector<edge> edges(m);
+    for (int i = 0; i < m;i++)
     {
-        if(cnt == 0)
+        // cin >> edges[i].w >> edges[i].l >> edges[i].r;
+        cin >> edges[i].w;
+        edges[i].l = read(n);
+        // debug(edges[i].l)
+        edges[i].r = read(n);
+        // debug(edges[i].r)
+
+    }
+
+    priority_queue<pll, vector<pll>, greater<pll>> pq;
+    pq.push({0, s});
+    vector<i64> dist(MAXN, INF);
+    // dist[s] = 0;
+    // debug(s)
+    i64 ans = -1;
+    while(!pq.empty())
+    {
+        auto [d, ste] = pq.top();
+        pq.pop();
+
+        if(d >= dist[ste])
             continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
+        dist[ste] = d;
+
+        if(ste == 0)
         {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
+            cout << d << "\n";
+            return;
         }
-        else
+
+        for(auto &[l, r, w] : edges)
         {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
+            i64 nxt = (ste & (~l)) | r;
+            pq.push({w + d, nxt});
         }
     }
-    cout << ans << "\n";
+    // debug(s)
+    cout << -1 << "\n";
+    return;
 }
 
 bool ED;

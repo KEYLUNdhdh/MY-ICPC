@@ -19,59 +19,6 @@ typedef tuple<int, int, int> piii;
 typedef pair<i64, i64> pll;
 typedef pair<i128, i128> pllll;
 mt19937 rnd(time(0));
-template <typename T1, typename T2>
-ostream &operator<<(ostream &os, const pair<T1, T2> &p) // PII 
-{
-    return os << "(" << p.first << ", " << p.second << ")\n";
-}
-template <typename T>
-ostream &operator<<(ostream &os, const vector<T> &v) //vector
-{
-    os << "[";
-    for (int i = 0; i < v.size(); ++i)
-    {
-        if (i)
-            os << ", ";
-        os << v[i];
-    }
-    return os << "]\n";
-}
-template <typename T>
-ostream &operator<<(ostream &os, const deque<T> &d) //deque
-{
-    os << "[";
-    for (int i = 0; i < d.size(); ++i)
-    {
-        if (i)
-            os << ", ";
-        os << d[i];
-    }
-    return os << "]\n";
-}
-template <typename T>
-ostream &operator<<(ostream &os, const set<T> &v) //set
-{
-    os << "[";
-    for (auto x = v.begin(); x != v.end(); x++)
-    {
-        if (x != v.begin())
-            os << ", ";
-        os << *x;
-    }
-    return os << "]\n";
-}
-template <typename T1, typename T2>
-ostream &operator<<(ostream &os, const map<T1, T2> &v) //map
-{
-    os << " {";
-    for (auto it = v.begin(); it != v.end(); it++)
-    {
-        if (it != v.begin())
-            os << ", ";
-        os << "(" << it->first << " -> " << it->second << ")"; //键值对
-    }
-    return os << "}\n";
-}
 
 template<class T>
 void chmax(T &a, T b) 
@@ -87,6 +34,7 @@ void chmin(T &a, T b)
 }
 constexpr int MOD = 998244353, INF = 1e9;
 
+// CF经典问题，倒着去考虑
 void solve()
 {
     int n;

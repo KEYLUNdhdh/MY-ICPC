@@ -41,34 +41,44 @@ void solve()
 {
     int n;
     cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
-    vector<i64> a(n + 1, 0);
-    for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
 
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
+    vector<int> l(n + 1, 0), r(n + 1, 0), u(n + 1, 0), v(n + 1, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> l[i] >> r[i] >> u[i] >> v[i];
+
+
+    auto check = [&](int m) -> bool
     {
-        if(cnt == 0)
-            continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
+        int p = 0;
+        for (int i = 1; i <= m;i++)
         {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
+            int f = 0;
+            int rn = m - i + 1;
+            for (int j = p + 1; j <= n;j++)
+            {
+                bool ll = (i < l[j]) || (i > r[j]);
+                bool rr = (rn < u[j]) || (rn > v[j]);
+                if(ll && rr)
+                {
+                    f = 1;
+                    p = j;
+                    break;
+                }
+            }
+            if(!f)
+                return false;
         }
-        else
+        return true;
+    };
+
+    for (int i = n; i >= 0;i--)
+    {
+        if(check(i))
         {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
+            cout << i << "\n";
+            return;
         }
     }
-    cout << ans << "\n";
 }
 
 bool ED;
@@ -80,7 +90,7 @@ signed lyc_fan_club()
     cin >> T;
     while(T--)
         solve();
-    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

@@ -41,34 +41,45 @@ void solve()
 {
     int n;
     cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
     vector<i64> a(n + 1, 0);
     for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
+        cin >> a[i];
 
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
+    vector<pair<i64, int>> stk;
+    for (int i = 1; i <= n;i++)
     {
-        if(cnt == 0)
+        if(stk.empty())
+        {
+            stk.push_back({a[i], 1});
             continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
-        {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
         }
-        else
+
+        i64 ave = a[i];
+        stk.push_back({a[i], 1});
+        while(stk.size() >= 2)
         {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
+            auto [sum1, cnt1] = stk.back();
+            stk.pop_back();
+            auto [sum2, cnt2] = stk.back();
+            stk.pop_back();
+            if(sum1 * cnt2 <= sum2 * cnt1)
+                stk.push_back({sum1 + sum2, cnt1 + cnt2});
+            else
+            {
+                stk.push_back({sum2, cnt2});
+                stk.push_back({sum1, cnt1});
+                break;
+            }
         }
     }
-    cout << ans << "\n";
+
+    for(auto [sum, cnt] : stk)
+    {
+        ld ave = (ld)sum / (ld)cnt;
+        for (int i = 0; i < cnt;i++)
+            cout << fixed << setprecision(12) << ave << "\n";
+    }
+
 }
 
 bool ED;
@@ -77,10 +88,10 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
-    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

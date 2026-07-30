@@ -33,38 +33,54 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
-bool ST;
+// bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
 
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
-
+const int MAXN = (1 << (22));
+// 妈的今天怎么这么难
+// 三小时两题有感觉吗
 void solve()
 {
+    int n;
+    cin >> n;
+    vector<int> a(n + 1, 0);
 
-    sieve(300);
-    debug(primes.size())
+    for (int i = 1; i <= n;i++)
+    {
+        cin >> a[i];
+    }
+
+    vector<int> dp(MAXN + 1, -1);
+    for (int i = 1; i <= n;i++)
+        dp[a[i]] = a[i];
+
+    i64 mask = MAXN - 1;
+    for (int k = 0; k <= 22;k++)
+    {
+        for (int j = 0; j <= mask;j++)
+        {
+            if(dp[j] == -1)
+            {
+                if(j & (1 << k))
+                    dp[j] = dp[j ^ (1 << k)];
+            }
+        }
+    }
+
+    // for (int i = 1; i <= 100;i++)
+    // {
+    //     cerr << dp[i] << " ";
+    // }
+
+    for (int i = 1; i <= n; i++)
+    {
+        i64 rev = mask ^ a[i];
+        cout << dp[rev] << " ";
+    }
 }
 
-bool ED;
+// bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
@@ -73,7 +89,7 @@ signed lyc_fan_club()
     // cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

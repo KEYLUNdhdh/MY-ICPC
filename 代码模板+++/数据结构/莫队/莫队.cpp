@@ -57,7 +57,7 @@ struct Mo
             int b2 = q2.l / blockSize;
             if(b1 != b2)
                 return b1 < b2;
-            return (b1 & 1) ? q1.r < q2.r : q2.r < q1.r; 
+            return (b1 & 1) ? q1.r < q2.r : q2.r > q1.r; 
         });
 
         int L = 1, R = 0;

@@ -36,33 +36,48 @@ void chmax(T &a, T b)
 bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
 
 void solve()
 {
+    int h, w, q;
+    cin >> h >> w >> q;
 
-    sieve(300);
-    debug(primes.size())
+    vector<vector<pii>> op(h + 1);
+    vector<char> letter(q + 1, 'A');
+    for (int i = 1; i <= q;i++)
+    {
+        int r, c;
+        char x;
+        cin >> r >> c >> x;
+        op[r].push_back({c, i});
+        letter[i] = x;
+    }
+
+    vector<int> best(w + 1, '\0');
+    vector<vector<char>> mat(h + 1, vector<char>(w + 1, 'A'));
+
+    for (int i = h; i >= 1;i--)
+    {
+        for(auto [c, id] : op[i])
+            chmax(best[c], id);
+        int maxid = 0;
+        for (int j = w; j >= 1;j--)
+        {
+            chmax(maxid, best[j]);
+            mat[i][j] = letter[maxid];
+        }
+    }
+
+    for (int i = 1; i <= h;i++)
+    {
+        for (int j = 1; j <= w;j++)
+            cout << mat[i][j];
+
+        cout << "\n";
+    }
 }
+
+
 
 bool ED;
 signed lyc_fan_club()
@@ -73,7 +88,7 @@ signed lyc_fan_club()
     // cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

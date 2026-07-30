@@ -18,7 +18,7 @@ using db = double;
 typedef pair<int, int> pii;
 typedef pair<i64, i64> pll;
 typedef pair<i128, i128> pllll;
-mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 template<class T>
 void chmin(T &a, T b) 
@@ -37,38 +37,42 @@ bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
 
+// 翻转 - xi
+// 0 -> 1 + y1
 void solve()
 {
     int n;
-    cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
-    vector<i64> a(n + 1, 0);
-    for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
+    string s;
+    cin >> n >> s;
+    s = "*" + s;
+    for (int i = 1;i <= n;i++)
+        if(s[i] == 'S')
+            s[i] = '1';
+        else
+            s[i] = '0';
 
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
+    vector<i64> x(n + 1, 0), y(n, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> x[i];
+    for (int i = 1; i <= n - 1;i++)
+        cin >> y[i];
+
+    vector<array<i64, 2>> dp(n + 1, {0, 0});
+    for (int i = 1; i <= n;i++)
     {
-        if(cnt == 0)
-            continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
+        if(s[i] == '1')
         {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
+            dp[i][1] = max(dp[i - 1][0] + y[i - 1], dp[i - 1][1]);
+            dp[i][0] = -x[i] + max(dp[i - 1][0], dp[i - 1][1]);
         }
         else
         {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
+            dp[i][1] = max(-x[i] + dp[i - 1][0] + y[i - 1], dp[i - 1][1] - x[i]);
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
         }
     }
-    cout << ans << "\n";
+
+    cout << max(dp[n][0], dp[n][1]) << "\n";
 }
 
 bool ED;
@@ -80,7 +84,7 @@ signed lyc_fan_club()
     cin >> T;
     while(T--)
         solve();
-    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

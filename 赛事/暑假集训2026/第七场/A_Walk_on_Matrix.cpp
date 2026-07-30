@@ -36,32 +36,17 @@ void chmax(T &a, T b)
 bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
 
 void solve()
 {
+    int k;
+    cin >> k;
 
-    sieve(300);
-    debug(primes.size())
+    int n = 2, m = 3;
+    int ub = pow(2, 17);
+    cout << 2 << " " << 3 << "\n";
+    cout << ub + k << " " << ub << " " << 0 << "\n";
+    cout << k << " " << ub + k << " " << k << "\n";
 }
 
 bool ED;
@@ -73,7 +58,7 @@ signed lyc_fan_club()
     // cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

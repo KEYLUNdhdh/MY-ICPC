@@ -33,30 +33,35 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
+bool ST;
+
 constexpr i64 MOD = 998244353, INF = 1e9;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<int> a(n);
-    int f = 0;
+    int n, m;
+    cin >> n >> m;
+    vector<array<string, 2>> ss(n);
     for (int i = 0; i < n;i++)
+        cin >> ss[i][0] >> ss[i][1];
+
+    for (int i = 0; i < m;i++)
     {
-        int x;
-        cin >> x;
-        if(x >= 0)
+        string s, ip;
+        cin >> s >> ip;
+
+        string ans = s + " " + ip;
+        ip.pop_back();
+        for (int i = 0; i < n;i++)
         {
-            f = 1;
-            break;
+            if(ss[i][1] == ip)
+                ans += " #" + ss[i][0];
         }
+        cout << ans << "\n";
     }
-    if(f)
-        cout << "No";
-    else
-        cout << "Yes";
 }
 
+bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
@@ -65,6 +70,7 @@ signed lyc_fan_club()
     // cin >> T;
     while(T--)
         solve();
-
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

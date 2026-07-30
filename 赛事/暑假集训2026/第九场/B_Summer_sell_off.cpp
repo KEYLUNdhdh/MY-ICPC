@@ -33,38 +33,52 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
-bool ST;
+// bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
 
-void sieve(int n)
+struct e
 {
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
-
+    i64 k, l, up, id;
+};
 void solve()
 {
+    int n, f;
+    cin >> n >> f;
 
-    sieve(300);
-    debug(primes.size())
+    vector<e> a(n + 1);
+    for (int i = 1; i <= n;i++)
+    {
+        cin >> a[i].k >> a[i].l;
+        a[i].id = i;
+        // debug(a[i].k)
+        if(a[i].k >= a[i].l)
+            continue;
+        i64 db = a[i].k * 2;
+        a[i].up = min(db, a[i].l) - a[i].k;
+    }
+
+    sort(a.begin() + 1, a.end(), [](e p, e q){return p.up > q.up;});
+    // for (int i = 1; i <= n;i++)
+    // {
+    //     cerr << a[i].k << " " << a[i].l << " " << a[i].id << " " << a[i].up << "\n";
+    // }
+    i64 ans = 0;
+    for (int i = 1; i <= n;i++)
+    {
+        if(f > 0)
+        {
+            f--;
+            ans += min(a[i].k * 2, a[i].l);
+        }
+        else
+            ans += min(a[i].k, a[i].l);
+        // debug(ans)debug(f)
+    }
+
+    cout << ans;
 }
-
-bool ED;
+// bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
@@ -73,7 +87,7 @@ signed lyc_fan_club()
     // cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

@@ -37,38 +37,54 @@ bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
 
+
+// 建图优化，引入虚拟节点。
+// 超级源点
 void solve()
 {
-    int n;
-    cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
-    vector<i64> a(n + 1, 0);
-    for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
+    int n, m;
+    i64 y;
+    cin >> n >> m >> y;
 
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
+    vector<vector<pll>> adj(n + 2);
+    for (int i = 1; i <= m;i++)
     {
-        if(cnt == 0)
+        int u, v;
+        i64 c;
+        cin >> u >> v >> c;
+        adj[u].push_back({c, v});
+        adj[v].push_back({c, u});
+    }
+
+    for (int i = 1; i <= n;i++)
+    {
+        i64 val;
+        cin >> val;
+        adj[i].push_back({val, n + 1});
+        adj[n + 1].push_back({val + y, i});
+    }
+
+    vector<i64> ans(n + 2, 2e18);
+    priority_queue<pll, vector<pll>, greater<pll>> pq;
+    pq.push({0, 1});
+    while(!pq.empty())
+    {
+        auto [dis, u] = pq.top();
+        pq.pop();
+        if(dis >= ans[u])
             continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
+        ans[u] = dis;
+        for(auto &[len, v] : adj[u])
         {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
-        }
-        else
-        {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
+            if(ans[u] + len < ans[v])
+            {
+                pq.push({ans[u] + len, v});
+            }
         }
     }
-    cout << ans << "\n";
+
+    for (int i = 2; i <= n;i++)
+        cout << ans[i] << " ";
 }
 
 bool ED;
@@ -77,10 +93,10 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
-    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

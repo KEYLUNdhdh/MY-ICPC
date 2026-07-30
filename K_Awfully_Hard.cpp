@@ -33,9 +33,11 @@ void chmax(T &a, T b)
     if (a < b) 
         a = b;
 }
-bool ST;
+// bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
+
+// 质因数分解
 vector<int> primes,isPrime;
 
 void sieve(int n)
@@ -57,23 +59,29 @@ void sieve(int n)
 	}
 }
 
+// 有连锁反应的，质因数的次幂和质数不是紧致上界
 void solve()
 {
+    int n;
+    cin >> n;
+    vector<i64> a(n + 1, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> a[i];
 
-    sieve(300);
-    debug(primes.size())
+    
 }
 
-bool ED;
+// bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
+    sieve(1e6);
     int T = 1;
-    // cin >> T;
+    cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

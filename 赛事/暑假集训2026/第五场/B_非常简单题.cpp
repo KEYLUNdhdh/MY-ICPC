@@ -41,34 +41,53 @@ void solve()
 {
     int n;
     cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
-    vector<i64> a(n + 1, 0);
-    for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
 
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
+    if(n == 1)
     {
-        if(cnt == 0)
-            continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
-        {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
-        }
+        cout << 1 << "\n";
+        return;
+    }
+
+    int cnt = 0;
+    vector<int> a, b;
+    vector<int> res(n + 1, -1);
+    vector<int> nxt(n + 1, INF);
+    for (int i = 1; i <= n; i++)
+        cin >> res[i];
+    map<int, int> mp;
+    for (int i = n; i >= 1;i--)
+    {
+        int num = res[i];
+        if(!mp[num])
+            mp[num] = i;
+        else
+            nxt[i] = mp[num], mp[num] = i;
+    }
+
+    // debugarr(nxt) 
+
+    for (int i = 1; i <= n;i++)
+    {
+        if(a.empty())
+            a.push_back(i), cnt++;
+        else if(res[a.back()] == res[i])
+            a.push_back(i);
+        else if(b.empty())
+            b.push_back(i), cnt++;
+        else if (res[b.back()] == res[i])   
+            b.push_back(i);
         else
         {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
+            int nxa = nxt[a.back()], nxb = nxt[b.back()];
+            if(nxa < nxb)
+                b.push_back(i);
+            else
+                a.push_back(i);
+            cnt++;
         }
     }
-    cout << ans << "\n";
+    // for(int)
+    cout << cnt;
 }
 
 bool ED;
@@ -77,7 +96,7 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    cin >> T;
+    // cin >> T;
     while(T--)
         solve();
     cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;

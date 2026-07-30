@@ -41,34 +41,50 @@ void solve()
 {
     int n;
     cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
-    vector<i64> a(n + 1, 0);
-    for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
 
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
-    {
-        if(cnt == 0)
-            continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
-        {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
-        }
-        else
-        {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
-        }
-    }
-    cout << ans << "\n";
+    int k = n / 2;
+
+    vector<int> ord;
+    ord.reserve(n);
+
+    ord.push_back(1);
+
+    for (int i = k + 1; i <= n; i++)
+        ord.push_back(i);
+
+    for (int i = k; i >= 2; i--)
+        ord.push_back(i);
+
+    vector<int> p(n + 1, 0);
+
+    for (int i = 0; i < n; i++)
+        p[ord[i]] = ord[(i + 1) % n];
+
+    i64 res = 0;
+
+    for (int i = k + 1; i <= n - 1; i++)
+        res += 1ll * (i - 1) * (i - 1);
+
+    for (int i = k; i >= 2; i--)
+        res += 1ll * (n - i) * (n - i);
+
+    res += 1ll * (n - 1) * (n - 1);
+
+    cout << res << "\n";
+
+    for (int i = 1; i <= n; i++)
+        cout << p[i] << " ";
+    cout << "\n";
+
+    cout << n - 1 << "\n";
+
+    for (int i = k + 1; i <= n - 1; i++)
+        cout << i << " " << 1 << "\n";
+
+    for (int i = k; i >= 2; i--)
+        cout << i << " " << n << "\n";
+
+    cout << n << " " << 1 << "\n";
 }
 
 bool ED;

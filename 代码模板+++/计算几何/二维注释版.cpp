@@ -7,6 +7,7 @@ constexpr ld eps = 1e-12;
 constexpr ld PI=3.1415926535897932384l;
 
 // atan2(|a ^ b|, a * b)  直接获取两个向量的夹角，精度较高。
+// partition_point(A.begin() + 1, A.end(), [&](Point &a) { return (line.toleft(a)) == -1; }); 这个是寻找分割点的正确式子
 // 方便更改全局的数据类型
 using point_t = ld;
 // 点与向量

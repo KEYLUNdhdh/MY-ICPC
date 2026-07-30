@@ -36,7 +36,8 @@ void chmax(T &a, T b)
 constexpr i64 MOD = 998244353, INF = 2e18;
 const int lim = 1e5 + 50;
 
-
+// 这题含金量超高
+// 考虑枚举 2 的幂次
 vector<vector<i64>> best(32, vector<i64>(lim + 2, INF));
 vector<vector<i64>> besto(32, vector<i64>(lim + 2, INF));
 vector<int> c(lim + 1, 0);

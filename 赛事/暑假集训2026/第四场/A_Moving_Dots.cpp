@@ -35,33 +35,45 @@ void chmax(T &a, T b)
 }
 bool ST;
 
-constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
+constexpr i64 MOD = 1e9 + 7, INF = 2e18;
 
-void sieve(int n)
+i64 qpow(i64 a, i64 b)
 {
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
+    i64 res = 1;
+    a %= MOD;
+    while(b)
+    {
+        if(b & 1)
+            res = res * a % MOD;
+        a = a * a % MOD;
+        b >>= 1;
+    }
+    return res;
 }
 
 void solve()
 {
+    int n;
+    cin >> n;
+    vector<i64> a(n + 2, 0);
+    for (int i = 1;i <= n;i++)
+        cin >> a[i];
+    a[0] = -INF;
+    a[n + 1] = INF;
+    i64 ans = 0;
+    for (int i = 1; i <= n;i++)
+    {
+        for (int j = i + 1;j <= n;j++)
+        {
+            int lb = 2 * a[i] - a[j];
+            int pre = lower_bound(a.begin(), a.end(), lb) - a.begin();
+            int ub = 2 * a[j] - a[i];
+            int nxt = lower_bound(a.begin(), a.end(), ub) - a.begin() - 1;
+            ans = (ans + qpow(2, pre - 1 + n - nxt)) % MOD;
+        }
+    }
 
-    sieve(300);
-    debug(primes.size())
+    cout << ans;
 }
 
 bool ED;

@@ -41,33 +41,45 @@ void solve()
 {
     int n;
     cin >> n;
-    int lb = (n + 1) / 2;
-    map<i64, int> mp;
-    vector<i64> a(n + 1, 0);
+    map<i64, vector<int>> mp;
+    queue<pair<i64, int>> q;
     for (int i = 1; i <= n;i++)
-        cin >> a[i], mp[a[i]]++;
-
-    i64 tmp = (1ll << 31) - 1;
-    int mask = tmp;
-    int ans = 0;
-    for(auto &[val, cnt] : mp)
     {
-        if(cnt == 0)
-            continue;
-        int t = val ^ mask;
-        if(mp.find(t) == mp.end())
+        i64 val, p;
+        cin >> val, p = val + i - 1;
+        if(i > 1)
         {
-            // mp[t]
-            ans += cnt;
-            cnt = 0;
-        }
-        else
-        {
-            int ava = min(mp[t], cnt);
-            mp[t] -= ava;
-            ans += cnt;
+            mp[p].push_back(i);
+            if(p == n)
+                q.push({n, i});
         }
     }
+    
+    if(q.empty())
+    {
+        cout << n << "\n";
+        return;
+    }
+
+    i64 ans = n;
+    set<int> st;
+    while(!q.empty())
+    {
+        auto [val, pos] = q.front();
+        q.pop();
+        // cerr << "val:" << val << " " << "pos:" << pos << "\n";
+        i64 nxtlen = val + pos - 1;
+        chmax(ans, nxtlen);
+        auto it = mp.find(nxtlen);
+        if(it != mp.end())
+        {
+            for(int v : mp[nxtlen])
+                q.push({nxtlen, v});
+                
+            mp.erase(it);
+        }
+    }
+    // cutline
     cout << ans << "\n";
 }
 
@@ -80,7 +92,7 @@ signed lyc_fan_club()
     cin >> T;
     while(T--)
         solve();
-    cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

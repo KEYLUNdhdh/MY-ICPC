@@ -36,32 +36,47 @@ void chmax(T &a, T b)
 bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
 
 void solve()
 {
+    int n;cin >> n;
+    deque<i64> a(n);
+    for (int i = 0; i < n;i++)
+        cin >> a[i];
 
-    sieve(300);
-    debug(primes.size())
+    sort(a.begin(), a.end());
+    deque<i64> p, q;
+    for (int i = 0; i < n;i++)
+        if(a[i] & 1)
+            p.push_back(a[i]);
+        else
+            q.push_back(a[i]);
+
+    if(p.empty() || q.empty())
+    {
+        cout << 0 << "\n";
+        return;
+    }
+    debugarr(p) debugarr(q)
+    i64 ans = 0;
+    while(!q.empty())
+    {
+        i64 maxji = p.back();
+        i64 ft = q.front();
+        if(maxji > ft)
+        {
+            q.pop_front();
+            p.push_back(maxji + ft);
+            ans++;
+        }
+        else
+        {
+            ans += q.size() + 1;
+            break;
+        }
+    }
+    cout << ans << "\n";
+    
 }
 
 bool ED;
@@ -70,10 +85,10 @@ signed lyc_fan_club()
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    // cin >> T;
+    cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

@@ -36,32 +36,46 @@ void chmax(T &a, T b)
 bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
-
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
 
 void solve()
 {
+    int n;
+    cin >> n;
+    vector<int> p(n), q(n);
+    for (int i = 0; i < n;i++)
+        cin >> p[i];
+    for (int i = 0; i < n;i++)
+        cin >> q[i];
 
-    sieve(300);
-    debug(primes.size())
+    for (int i = 0; i < n;i++)
+    {
+        if(p[i] > q[i])
+        {
+            cout << 0 << "\n";
+            return;
+        }
+        else if(p[i] < q[i])
+        {
+            break;
+        }
+    }
+    if(p == q)
+    {
+        cout << 0 << "\n";
+        return;
+    }
+    int cnt = 0;
+    // int pp = 5;
+    while(1)
+    {
+        next_permutation(p.begin(), p.end());
+        // debugarr(p)debugarr(q)
+        if(p != q)
+            cnt++;
+        else
+            break;
+    }
+    cout << cnt;
 }
 
 bool ED;
@@ -73,7 +87,7 @@ signed lyc_fan_club()
     // cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }

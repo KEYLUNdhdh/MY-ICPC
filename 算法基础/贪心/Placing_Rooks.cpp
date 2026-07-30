@@ -106,6 +106,7 @@ struct FenWick
     }
 };
 
+// 倒着考虑的思想很重要的
 void solve()
 {
     int n, m;

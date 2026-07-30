@@ -94,8 +94,7 @@ void solve()
     vector<pii> a(n);
     for (int i = 0; i < n;i++)
         cin >> a[i].first >> a[i].second;
-    sort(a.begin(), a.end(), [](pii a, pii b){
-        return a.second < b.second;});
+    sort(a.begin(), a.end(), [](pii a, pii b){return a.second < b.second;});
     i64 ans = 0;
     for (int i = 0; i < n;i++)
         for (int j = i + 1; j < n;j++)

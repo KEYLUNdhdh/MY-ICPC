@@ -36,44 +36,51 @@ void chmax(T &a, T b)
 bool ST;
 
 constexpr i64 MOD = 998244353, INF = 1e9;
-vector<int> primes,isPrime;
 
-void sieve(int n)
-{
-	isPrime.assign(n + 1, 1);
-	isPrime[1] = 0;
-	for (int i = 2; i <= n; ++i)
-	{
-		if (isPrime[i])
-			primes.push_back(i);
-		for (auto p : primes)
-		{
-			if(i * p > n)
-				break;
-			isPrime[i * p] = 0;
-			if(i % p == 0)
-				break;
-		}
-	}
-}
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 void solve()
 {
+    int n, m;
+    cin >> n >> m;
 
-    sieve(300);
-    debug(primes.size())
+    vector<vector<int>> mat(n + 1, vector<int>(m + 1, 0));
+    // vector<vector<int>> vis(n + 1, vector<int>(m + 1, 0));
+
+    for (int i = 1; i <= n;i++)
+        for (int j = 1; j <= m;j++)
+        {
+            cin >> mat[i][j];
+            if((i + j) & 1)
+            {
+                if(mat[i][j] % 2 == 0)
+                    mat[i][j]++;
+            }
+            else
+            {
+                if(mat[i][j] % 2)
+                    mat[i][j]++;
+            }
+        }
+    for (int i = 1; i <= n;i++)
+    {
+        for (int j = 1; j <= m;j++)
+            cout << mat[i][j] << " ";
+        cout << "\n";
+    }
+    
 }
-
 bool ED;
 signed lyc_fan_club()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
     int T = 1;
-    // cin >> T;
+    cin >> T;
     while(T--)
         solve();
-    // cerr<<"time used: "<<(double)clock()/CLOCKS_PER_SEC<< endl;
-    // cerr<<"memory used: "<<abs(&ST-&ED)/1024.0/1024.0<<" MB"<< endl;
+    // cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << endl;
+    // cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
     return 0;
 }
