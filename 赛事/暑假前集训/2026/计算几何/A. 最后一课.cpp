@@ -1,13 +1,20 @@
 #include <bits/stdc++.h>
 #define lyc_fan_club main
-#define debug(x) { cerr << #x << " = " << x << "\n"; }
-#define debugarr(x){        \
-    cerr << #x << " : ";    \
-    for(auto v : x)         \
-    cerr << v << " ";       \
-    cerr << "\n";           \
-}
-#define cutline { cerr << "----------------------\n"; }
+#define debug(x)                          \
+    {                                     \
+        cerr << #x << " = " << x << "\n"; \
+    }
+#define debugarr(x)           \
+    {                         \
+        cerr << #x << " : ";  \
+        for (auto v : x)      \
+            cerr << v << " "; \
+        cerr << "\n";         \
+    }
+#define cutline                             \
+    {                                       \
+        cerr << "----------------------\n"; \
+    }
 using namespace std;
 using i64 = long long;
 using u32 = unsigned int;
@@ -20,17 +27,17 @@ typedef pair<i64, i64> pll;
 typedef pair<i128, i128> pllll;
 mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
-template<class T>
-void chmin(T &a, T b) 
+template <class T>
+void chmin(T &a, T b)
 {
-    if (a > b) 
+    if (a > b)
         a = b;
 }
 
-template<class T>
-void chmax(T &a, T b) 
+template <class T>
+void chmax(T &a, T b)
 {
-    if (a < b) 
+    if (a < b)
         a = b;
 }
 constexpr i64 MOD = 998244353, INF = 1e9;
@@ -39,12 +46,17 @@ constexpr ld PI = 3.1415926535897932384l;
 
 using point_t = i64;
 
-template<typename T> 
+template <typename T>
 struct point
 {
     T x, y;
-    bool operator==(const point &a) const {return (abs(x - a.x) < eps && abs(y - a.y) < eps);}
-    bool operator<(const point &a) const {if(abs(x - a.x) <= eps) return y < a.y - eps; return x < a.x - eps;}
+    bool operator==(const point &a) const { return (abs(x - a.x) < eps && abs(y - a.y) < eps); }
+    bool operator<(const point &a) const
+    {
+        if (abs(x - a.x) <= eps)
+            return y < a.y - eps;
+        return x < a.x - eps;
+    }
     bool operator>(const point &a) const { return !(*this < a || *this == a); }
     point operator+(const point &a) const { return {x + a.x, y + a.y}; }
     point operator-(const point &a) const { return {x - a.x, y - a.y}; }
@@ -53,7 +65,11 @@ struct point
     point operator/(const T k) const { return {x / k, y / k}; }
     T operator*(const point &a) const { return x * a.x + y * a.y; }
     T operator^(const point &a) const { return x * a.y - y * a.x; }
-    int toleft(const point &a) const { const auto t = (*this) ^ a; return (t > eps) - (t < -eps);}
+    int toleft(const point &a) const
+    {
+        const auto t = (*this) ^ a;
+        return (t > eps) - (t < -eps);
+    }
     T len2() const { return (*this) * (*this); }
     T dis2(const point &a) const { return (a - (*this)).len2(); }
 
@@ -71,35 +87,41 @@ namespace Polar
 {
     inline int quad(const Point &a)
     {
-        if(a.y < -eps) return 1;
-        if(a.y > eps) return 4;
-        if(a.x < -eps) return 5;
-        if(a.x > eps)  return 3;
+        if (a.y < -eps)
+            return 1;
+        if (a.y > eps)
+            return 4;
+        if (a.x < -eps)
+            return 5;
+        if (a.x > eps)
+            return 3;
         return 2;
     }
 
     inline bool cmp(const Point &a, const Point &b)
     {
         int qa = quad(a), qb = quad(b);
-        if(qa != qb)
+        if (qa != qb)
             return qa < qb;
         const auto t = a ^ b;
-        if (abs(t) <= eps) return a.len2() < b.len2() - eps; 
-        else return t > eps;
+        if (abs(t) <= eps)
+            return a.len2() < b.len2() - eps;
+        else
+            return t > eps;
     }
 }
 
-template<typename T>
+template <typename T>
 struct line
 {
     point<T> p, v;
-    line(point<T> p = {0,0}, point<T> v = {0,0}) : p(p), v(v) {}
-    
+    line(point<T> p = {0, 0}, point<T> v = {0, 0}) : p(p), v(v) {}
+
     bool operator==(const line &a) const { return v.toleft(a.v) == 0 && v.toleft(p - a.p) == 0; }
     int toleft(const point<T> &a) const { return v.toleft(a - p); }
     bool operator<(const line &a) const
     {
-        if(abs(v ^ a.v) <= eps && v * a.v >= -eps)
+        if (abs(v ^ a.v) <= eps && v * a.v >= -eps)
             return toleft(a.p) == -1;
         return Polar::cmp(v, a.v);
     }
@@ -112,7 +134,7 @@ struct line
 
 using Line = line<point_t>;
 
-template<typename T>
+template <typename T>
 struct segment
 {
     point<T> a, b;
@@ -121,11 +143,11 @@ struct segment
 
     int is_on(const point<T> &p) const
     {
-        if(p == a || p == b)
+        if (p == a || p == b)
             return -1;
 
         return (p - a).toleft(p - b) == 0 && (p - a) * (p - b) < -eps;
-    }   
+    }
 
     int is_inter(const line<T> &l) const
     {
@@ -137,7 +159,7 @@ struct segment
 
     int is_inter(const segment<T> &s) const
     {
-        if(is_on(s.a) || is_on(s.b) || s.is_on(a) || s.is_on(b))
+        if (is_on(s.a) || is_on(s.b) || s.is_on(a) || s.is_on(b))
             return -1;
         const line<T> l{a, b - a}, ls{s.a, s.b - s.a};
         return l.toleft(s.a) * l.toleft(s.b) == -1 && ls.toleft(a) * ls.toleft(b) == -1;
@@ -145,7 +167,7 @@ struct segment
 
     ld dis(const point<T> &p) const
     {
-        if((p - a) * (b - a) < -eps || (p - b) * (a - b) < -eps)
+        if ((p - a) * (b - a) < -eps || (p - b) * (a - b) < -eps)
             return min(p.dis(a), p.dis(b));
         const line<T> l(a, b - a);
         return l.dis(p);
@@ -153,16 +175,16 @@ struct segment
 
     ld dis(const segment<T> &s) const
     {
-        if(is_inter(s))
+        if (is_inter(s))
             return 0;
 
-        return min({dis(s.a),dis(s.b),s.dis(a),s.dis(b)});
+        return min({dis(s.a), dis(s.b), s.dis(a), s.dis(b)});
     }
 };
 
 using Segment = segment<point_t>;
 
-template<typename T> 
+template <typename T>
 struct polygon
 {
     vector<point<T>> p;
@@ -172,7 +194,7 @@ struct polygon
     T area() const
     {
         T sum = 0;
-        for (int i = 0; i < p.size();i++)
+        for (int i = 0; i < p.size(); i++)
             sum += p[i] ^ p[nxt(i)];
         return sum;
     }
@@ -180,7 +202,7 @@ struct polygon
     ld circ() const
     {
         ld sum = 0;
-        for (int i = 0;i < p.size();i++)
+        for (int i = 0; i < p.size(); i++)
             sum += p[i].dis(p[nxt(i)]);
         return sum;
     }
@@ -188,21 +210,21 @@ struct polygon
     pair<bool, int> winding(const point<T> &a) const
     {
         int cnt = 0;
-        for (int i = 0; i < p.size();i++)
+        for (int i = 0; i < p.size(); i++)
         {
             const point<T> u = p[i], v = p[nxt(i)];
-            if(abs((a - u) ^ (a - v)) <= eps && (a - u) * (a - v) <= eps)
+            if (abs((a - u) ^ (a - v)) <= eps && (a - u) * (a - v) <= eps)
                 return {true, 0};
-            if(abs(u.y - v.y) <= eps)
+            if (abs(u.y - v.y) <= eps)
                 continue;
             const Line uv = {u, v - u};
-            if(u.y < v.y - eps && uv.toleft(a) <= 0)
+            if (u.y < v.y - eps && uv.toleft(a) <= 0)
                 continue;
-            if(u.y > v.y + eps && uv.toleft(a) >= 0)
+            if (u.y > v.y + eps && uv.toleft(a) >= 0)
                 continue;
-            if(u.y < a.y - eps && v.y >= a.y - eps)
+            if (u.y < a.y - eps && v.y >= a.y - eps)
                 cnt++;
-            if(u.y >= a.y - eps && v.y < a.y - eps)
+            if (u.y >= a.y - eps && v.y < a.y - eps)
                 cnt--;
         }
         return {false, cnt};
@@ -211,46 +233,49 @@ struct polygon
 
 using Polygon = polygon<point_t>;
 
-template<typename T> 
+template <typename T>
 struct convex : polygon<T>
 {
     // guarantee that n > 2
-    template<typename F>
+    template <typename F>
     void rotcaliper(const F &func) const
     {
         const auto &p = this->p;
-        const auto area = [](const point<T> &u, const point<T> &v, const point<T> &w) { return (w - u) ^ (w - v); };
+        const auto area = [](const point<T> &u, const point<T> &v, const point<T> &w)
+        { return (w - u) ^ (w - v); };
 
-        for (int i = 0, j = 1; i < p.size();i++)
+        for (int i = 0, j = 1; i < p.size(); i++)
         {
             const auto nxti = this->nxt(i);
-            while(area(p[this->nxt(j)], p[i], p[nxti]) >= area(p[j], p[i], p[nxti]))
+            while (area(p[this->nxt(j)], p[i], p[nxti]) >= area(p[j], p[i], p[nxti]))
                 j = this->nxt(j);
             func(p[i], p[nxti], p[j]);
         }
-    } 
+    }
 
     // guarantee that n > 2
-    template<typename F>
+    template <typename F>
     void rotcaliperRec(const F &func) const
     {
         const auto &p = this->p;
-        const auto area = [](const point<T> &u, const point<T> &v, const point<T> &w) {return (w - u) ^ (w - v);};
-        const auto dot = [](const point<T> &u, const point<T> &v, const point<T> &w) {return (w - v) * (u - v);};
+        const auto area = [](const point<T> &u, const point<T> &v, const point<T> &w)
+        { return (w - u) ^ (w - v); };
+        const auto dot = [](const point<T> &u, const point<T> &v, const point<T> &w)
+        { return (w - v) * (u - v); };
 
-        for (int i = 0, j = 1, l = 1, r = 1; i < p.size();i++)
+        for (int i = 0, j = 1, l = 1, r = 1; i < p.size(); i++)
         {
             const auto nxti = this->nxt(i);
-            while(area(p[this->nxt(j)], p[i], p[nxti]) >= area(p[j], p[i], p[nxti]))
+            while (area(p[this->nxt(j)], p[i], p[nxti]) >= area(p[j], p[i], p[nxti]))
                 j = this->nxt(j);
 
-            while(dot(p[this->nxt(r)], p[i], p[nxti]) >= dot(p[r], p[i], p[nxti]))
+            while (dot(p[this->nxt(r)], p[i], p[nxti]) >= dot(p[r], p[i], p[nxti]))
                 r = this->nxt(r);
 
-            if(i == 0)
+            if (i == 0)
                 l = r;
 
-            while(dot(p[this->nxt(l)], p[i], p[nxti]) <= dot(p[l], p[i], p[nxti]))
+            while (dot(p[this->nxt(l)], p[i], p[nxti]) <= dot(p[l], p[i], p[nxti]))
                 l = this->nxt(l);
 
             func(p[i], p[nxti], p[j], p[r], p[l]);
@@ -260,19 +285,19 @@ struct convex : polygon<T>
     int is_in(const point<T> &a) const
     {
         const auto &p = this->p;
-        if(p.size() == 0)
+        if (p.size() == 0)
             return 0;
-        if(p.size() == 1)
+        if (p.size() == 1)
             return a == p[0] ? -2 : 0;
-        if(p.size() == 2)
+        if (p.size() == 2)
         {
-            if(a == p[0] || a == p[1])
+            if (a == p[0] || a == p[1])
                 return -2;
             return segment<T>{p[0], p[1]}.is_on(a) == 1 ? -1 : 0;
         }
-        if(a == p[0])
+        if (a == p[0])
             return -2;
-        if((p[1] - p[0]).toleft(a - p[0]) == -1 || (p.back() - p[0]).toleft(a - p[0]) == 1)
+        if ((p[1] - p[0]).toleft(a - p[0]) == -1 || (p.back() - p[0]).toleft(a - p[0]) == 1)
             return 0;
 
         const auto cmp = [&](const point<T> &u, const point<T> &v)
@@ -282,31 +307,31 @@ struct convex : polygon<T>
 
         const int i = lower_bound(p.begin() + 1, p.end(), a, cmp) - p.begin();
 
-        if(i == p.size())
+        if (i == p.size())
             return 0;
-        if(a == p[i] || a == p[this->pre(i)])
+        if (a == p[i] || a == p[this->pre(i)])
             return -2;
-        if(i == 1)
+        if (i == 1)
             return segment<T>{p[0], p[i]}.is_on(a) == 1 ? -1 : 0;
-        if(i == p.size() - 1 && segment<T>{p[0], p[i]}.is_on(a) == 1)
+        if (i == p.size() - 1 && segment<T>{p[0], p[i]}.is_on(a) == 1)
             return -1;
-        if(segment<T>{p[i - 1], p[i]}.is_on(a) == 1)
+        if (segment<T>{p[i - 1], p[i]}.is_on(a) == 1)
             return -1;
         return (p[i] - p[i - 1]).toleft(a - p[i - 1]) > 0;
     }
-    
+
     int relation(const line<T> &l) const
     {
         const auto &p = this->p;
         const int n = p.size();
 
-        if(n == 0)
+        if (n == 0)
             return 0;
 
-        if(n <= 2)
+        if (n <= 2)
         {
             int pos = 0, neg = 0, on = 0;
-            for(auto &u : p)
+            for (auto &u : p)
             {
                 const int s = l.toleft(u);
                 pos |= s > 0;
@@ -314,9 +339,9 @@ struct convex : polygon<T>
                 on |= s == 0;
             }
 
-            if(pos && neg)
+            if (pos && neg)
                 return 1;
-            if(on)
+            if (on)
                 return -1;
             return 0;
         }
@@ -325,9 +350,9 @@ struct convex : polygon<T>
         const int si = l.toleft(p[i]);
         const int sj = l.toleft(p[j]);
 
-        if(si * sj < 0)
+        if (si * sj < 0)
             return 1;
-        if(si == 0 || sj == 0)
+        if (si == 0 || sj == 0)
             return -1;
         return 0;
     }
@@ -337,30 +362,30 @@ struct convex : polygon<T>
         const auto &p = this->p;
         const int n = p.size();
 
-        if(n == 0)
+        if (n == 0)
             return 0;
-        if(n == 1)
+        if (n == 1)
             return s.is_on(p[0]) ? -1 : 0;
-        if(n == 2)
+        if (n == 2)
             return s.is_inter(segment<T>{p[0], p[1]}) ? -1 : 0;
 
-        if(s.a == s.b)
+        if (s.a == s.b)
             return is_in(s.a);
 
         const line<T> l{s.a, s.b - s.a};
         const int lineRelation = relation(l);
-        if(lineRelation == 0)
+        if (lineRelation == 0)
             return 0;
 
-        if(lineRelation == -1)
+        if (lineRelation == -1)
         {
             const auto [i, j] = tangent(l);
             const auto touch = [&](const int u) -> bool
             {
-                if(l.toleft(p[u]) != 0)
+                if (l.toleft(p[u]) != 0)
                     return false;
 
-                if(s.is_on(p[u]))
+                if (s.is_on(p[u]))
                     return true;
 
                 const int prev = this->pre(u);
@@ -369,14 +394,14 @@ struct convex : polygon<T>
                 if (l.toleft(p[prev]) == 0)
                 {
                     const segment<T> edge{p[prev], p[u]};
-                    if(s.is_inter(edge))
+                    if (s.is_inter(edge))
                         return true;
                 }
 
                 if (l.toleft(p[nxt]) == 0)
                 {
                     const segment<T> edge{p[u], p[nxt]};
-                    if(s.is_inter(edge))
+                    if (s.is_inter(edge))
                         return true;
                 }
                 return false;
@@ -385,13 +410,13 @@ struct convex : polygon<T>
         }
 
         auto [mx, mn] = tangent(l);
-        if(l.toleft(p[mx]) < l.toleft(p[mn]))
+        if (l.toleft(p[mx]) < l.toleft(p[mn]))
             swap(mx, mn);
 
         const auto indexAt = [&](const int start, const int step, const int k)
         {
             int index = (start + 1ll * step * k) % n;
-            if(index < 0)
+            if (index < 0)
                 index += n;
             return index;
         };
@@ -399,19 +424,19 @@ struct convex : polygon<T>
         const auto findCrossingEdge = [&](const int step) -> pii
         {
             int len;
-            if(step == 1)
+            if (step == 1)
                 len = (mn - mx + n) % n;
             else
                 len = (mx - mn + n) % n;
 
             int lo = 0;
             int hi = len;
-            while(lo + 1 < hi)
+            while (lo + 1 < hi)
             {
                 int m = lo + hi >> 1;
                 int id = indexAt(mx, step, m);
 
-                if(l.toleft(p[id]) > 0)
+                if (l.toleft(p[id]) > 0)
                     lo = m;
                 else
                     hi = m;
@@ -433,13 +458,13 @@ struct convex : polygon<T>
 
         ld t1 = intersec(u1, v1);
         ld t2 = intersec(u2, v2);
-        if(t1 > t2)
+        if (t1 > t2)
             swap(t1, t2);
         const ld left = max<ld>(0, t1);
         const ld right = min<ld>(1, t2);
-        if(left < right - eps)
+        if (left < right - eps)
             return 1;
-        if(left <= right + eps)
+        if (left <= right + eps)
             return -1;
         return 0;
     }
@@ -447,9 +472,9 @@ struct convex : polygon<T>
     T diamemter2() const
     {
         const auto &p = this->p;
-        if(p.size() == 1)
+        if (p.size() == 1)
             return 0;
-        if(p.size() == 2)
+        if (p.size() == 2)
             return p[0].dis2(p[1]);
         T ans = 0;
         auto func = [&](const point<T> &u, const point<T> &v, const point<T> &w)
@@ -460,7 +485,7 @@ struct convex : polygon<T>
         return ans;
     }
 
-    template<typename F>
+    template <typename F>
     int extreme(const F &dir) const
     {
         const auto &p = this->p;
@@ -469,20 +494,21 @@ struct convex : polygon<T>
             return dir(p[i]).toleft(p[this->nxt(i)] - p[i]) >= 0;
         };
 
-        const auto dir0 = dir(p[0]);;
+        const auto dir0 = dir(p[0]);
+        ;
         const auto check0 = check(0);
 
-        if(!check0 && check(p.size() - 1))
+        if (!check0 && check(p.size() - 1))
             return 0;
 
         const auto cmp = [&](const point<T> &v)
         {
             const int vi = &v - p.data();
-            if(vi == 0)
+            if (vi == 0)
                 return 1;
             const auto checkv = check(vi);
             const auto t = dir0.toleft(v - p[0]);
-            if(vi == 1 && checkv == check0 && t == 0)
+            if (vi == 1 && checkv == check0 && t == 0)
                 return 1;
             return checkv ^ (checkv == check0 && t <= 0);
         };
@@ -490,17 +516,21 @@ struct convex : polygon<T>
     }
 
     // promise that a is not "on" or "inside" the convex
-    pii tangent(const point<T> &a) const 
+    pii tangent(const point<T> &a) const
     {
-        const int i = extreme([&](const point<T> &u){return u - a;});
-        const int j = extreme([&](const point<T> &u){return a - u;});
+        const int i = extreme([&](const point<T> &u)
+                              { return u - a; });
+        const int j = extreme([&](const point<T> &u)
+                              { return a - u; });
         return {i, j};
     }
 
-    pii tangent(const line<T> &a) const 
+    pii tangent(const line<T> &a) const
     {
-        const int i = extreme([&](const auto &){return a.v;});
-        const int j = extreme([&](const auto &){return -a.v;});
+        const int i = extreme([&](const auto &)
+                              { return a.v; });
+        const int j = extreme([&](const auto &)
+                              { return -a.v; });
         return {i, j};
     }
 };
@@ -512,7 +542,7 @@ Convex convexhull(vector<Point> p)
     sort(p.begin(), p.end());
     p.erase(unique(p.begin(), p.end()), p.end());
 
-    if(p.size() <= 2)
+    if (p.size() <= 2)
         return {p};
 
     vector<Point> st;
@@ -522,9 +552,9 @@ Convex convexhull(vector<Point> p)
         return (back1 - back2).toleft(u - back1) <= 0;
     };
 
-    for(const Point &u : p)
+    for (const Point &u : p)
     {
-        while(st.size() > 1 && check(st, u))
+        while (st.size() > 1 && check(st, u))
             st.pop_back();
         st.push_back(u);
     }
@@ -533,9 +563,9 @@ Convex convexhull(vector<Point> p)
     p.pop_back();
     reverse(p.begin(), p.end());
 
-    for(const Point &u : p)
+    for (const Point &u : p)
     {
-        while(st.size() > k && check(st, u))
+        while (st.size() > k && check(st, u))
             st.pop_back();
         st.push_back(u);
     }
@@ -544,16 +574,14 @@ Convex convexhull(vector<Point> p)
     return {st};
 }
 
-
-
 void solve()
 {
     int n;
     cin >> n;
     vector<Point> ap(n), bp(n);
-    for (int i = 0; i < n;i++)
+    for (int i = 0; i < n; i++)
         cin >> ap[i].x >> ap[i].y;
-    for (int i = 0; i < n;i++)
+    for (int i = 0; i < n; i++)
         cin >> bp[i].x >> bp[i].y;
 
     Convex ca = convexhull(ap), cb = convexhull(bp);
@@ -562,7 +590,7 @@ void solve()
     auto checka = [&](const Point &p1, const Point &p2, const Point &p3) -> void
     {
         i64 s = (p2 - p1) ^ (p3 - p1);
-        if(s > maxa)
+        if (s > maxa)
         {
             maxa = s;
             pa[0] = p1, pa[1] = p2, pa[2] = p3;
@@ -571,7 +599,7 @@ void solve()
     auto checkb = [&](const Point &p1, const Point &p2, const Point &p3) -> void
     {
         i64 s = (p2 - p1) ^ (p3 - p1);
-        if(s > maxb)
+        if (s > maxb)
         {
             maxb = s;
             pb[0] = p1, pb[1] = p2, pb[2] = p3;
@@ -579,8 +607,6 @@ void solve()
     };
     ca.rotcaliper(checka);
     cb.rotcaliper(checkb);
-
-    
 }
 
 signed lyc_fan_club()
@@ -589,8 +615,8 @@ signed lyc_fan_club()
     cin.tie(0);
     int T = 1;
     cin >> T;
-    while(T--)
+    while (T--)
         solve();
 
     return 0;
-}   
+}

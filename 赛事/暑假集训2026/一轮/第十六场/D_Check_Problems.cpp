@@ -1,0 +1,137 @@
+// #pragma GCC optimize("O3,unroll-loops")
+// #pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#include <bits/stdc++.h>
+using namespace std;
+using i64 = long long;
+using u32 = unsigned int;
+using u64 = unsigned long long;
+using i128 = __int128;
+using ld = long double;
+using db = double;
+typedef pair<int, int> pii;
+typedef pair<i64, i64> pll;
+typedef pair<i128, i128> pllll;
+#define KEYLUN main
+#ifndef ONLINE_JUDGE
+#define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
+void debug_out() { cerr << "\n"; }
+template <typename Head, typename... Tail>
+void debug_out(Head H, Tail... T) { cerr << " " << H; debug_out(T...); }
+#define debugarr(...) debugarr_out(#__VA_ARGS__, __VA_ARGS__)
+void debugarr_out(const char* names) {}
+template <typename Head, typename... Tail>
+void debugarr_out(const char* names, Head H, Tail... T) {
+    while (*names == ' ' || *names == ',') names++;
+    int bracket = 0, i = 0;
+    for (; names[i]; ++i) {
+        if (names[i] == '(' || names[i] == '{' || names[i] == '[') bracket++;
+        else if (names[i] == ')' || names[i] == '}' || names[i] == ']') bracket--;
+        else if (names[i] == ',' && bracket == 0) break;
+    }
+    cerr.write(names, i);
+    cerr << " : ";
+    for (auto v : H) cerr << v << " ";
+    cerr << "\n"; 
+    
+    debugarr_out(names + i + 1, T...);
+}
+#define cutline { cerr << "----------------------\n"; }
+#else
+#define debug(...)
+#define debugarr(...)
+#define cutline
+#endif
+mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count() ^ (uint64_t)new char);
+template<class T> void chmin(T &a, T b) { if (a > b) a = b; }
+template<class T> void chmax(T &a, T b) { if (a < b) a = b; }
+bool ST;
+
+constexpr int inf = 1e9;
+constexpr i64 MOD = 998244353, INF = 2e18;
+
+ostream &operator<<(ostream &os, i128 n) {
+    string s;
+    int f = 0;
+    if(n == 0)
+        s = "0";
+    if(n < 0)
+    {
+        f = 1;
+        n = -n;
+    }
+    while (n) {
+        s += '0' + n % 10;
+        n /= 10;
+    }
+    reverse(s.begin(), s.end());
+    if(f)
+        s = '-' + s;
+    return os << s;
+}
+
+istream &operator>>(istream &is,i128& n)
+{
+    n = 0;
+    string s;
+    is >> s;
+    int sign = 1, start = 0;
+    if(s[0] == '-')
+    {
+        sign = -1;
+        start = 1;
+    }
+    for (int i = start; i < s.size();i++)
+    {
+        n = n * 10 + s[i] - '0';
+    }
+    n *= sign;
+    return is;
+}
+
+
+void solve()
+{
+    int n;
+    cin >> n;
+    vector<i128> a(n + 1, 0);
+    vector<i128> del(n + 1, 0), p(n + 1, 0);
+    for (int i = 1; i <= n;i++)
+        cin >> a[i];
+    for (int i = 1; i <= n - 1;i++)
+    {
+        del[i] = a[i + 1] - a[i];
+        p[i] = del[i] + p[i - 1];
+    }
+
+    del[n] = INF;
+    // debugarr(a, del, p);
+    int q;
+    cin >> q;
+    while(q--)
+    {
+        i128 t;
+        cin >> t;
+        auto it = lower_bound(del.begin() + 1, del.end(), t) - del.begin();
+        i128 rest = it - 1, len = n - it + 1;
+        // debug(it, rest, len);
+        i128 ans = p[rest] + len * t;
+        cout << ans << "\n";
+    }
+}
+
+bool ED;
+signed KEYLUN()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int T = 1;
+    // cin >> T;
+    while(T--)
+        solve();
+#ifndef ONLINE_JUDGE
+    cerr << "\n---------------------------\n";
+    cerr << "time used: " << (double)clock() / CLOCKS_PER_SEC << " s" << endl;
+    cerr << "memory used: " << abs(&ST - &ED) / 1024.0 / 1024.0 << " MB" << endl;
+#endif
+    return 0;
+}

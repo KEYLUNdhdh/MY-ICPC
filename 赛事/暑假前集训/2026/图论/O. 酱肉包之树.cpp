@@ -171,7 +171,7 @@ void solve()
             ans += calc(u, x) + calc(x, v) - calc(u, v);
         }
         if(st.empty())
-            cout << 0 << " ";
+            cout << 0 << " ";   
         else if(st.count({dfn[s], s}))
             cout << ans << " ";
         else

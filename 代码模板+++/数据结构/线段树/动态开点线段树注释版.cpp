@@ -42,6 +42,7 @@ struct dynamicSegmentTree
         else
             update(rs[u], m + 1, r, val, cnt);
     }
+    
     // 核心 2：查询严格小于 val 的数字个数，再 +1 得到排名
     i64 getRnk(i64 u, int l, int r, i64 val)
     {
